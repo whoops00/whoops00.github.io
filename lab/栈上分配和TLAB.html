@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">天网空间</title>
+  <title itemprop="name">lab | 天网空间</title>
   
     <link rel="shortcut icon" href="/images/xin.ico">
   
@@ -358,10 +358,19 @@
 
         <div class="pattern-center-blank"></div>
   
+    <div class="pattern-center ">
+      <div class="pattern-attachment-img">
+        <img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/jvm内存布局.jpeg" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+      </div>
+      <header class="pattern-header ">
+        <h1 class="entry-title">
+        Java</h1>
+      </header>
+    </div>
+  
   <div id="content" class="site-content">
     <article class="post-item post-301 page type-page status-publish has-post-thumbnail hentry">
-      <p>title: lab<br>date: 2020-03-03 21:38:45<br>keywords: Java<br>description:<br>comments: true<br>photos: <a href="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/jvm内存布局.jpeg" target="_blank" rel="noopener">https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/jvm内存布局.jpeg</a></p>
-<h4 id="栈上分配："><a href="#栈上分配：" class="headerlink" title="栈上分配："></a>栈上分配：</h4><p>为什么要栈上分配？</p>
+      <h4 id="栈上分配："><a href="#栈上分配：" class="headerlink" title="栈上分配："></a>栈上分配：</h4><p>为什么要栈上分配？</p>
 <p>在一个应用程序中，其实有很多的对象的作用域都不会<strong>逃逸出方法</strong>外，也就是说该对象的<strong>生命周期会随着方法的调用开始而开始，方法的调用结束而结束</strong>。对于这种对象，如果分配在堆中，方法调用结束后就没有了引用指向这个对象，这种对象就是垃圾，等待GC回收，如果这种对象较多，无疑增加了GC的压力，所以<strong>JVM</strong>就提供了一种<strong>栈上分配</strong>。</p>
 <ul>
 <li>开启<strong>逃逸分析</strong>：</li>
