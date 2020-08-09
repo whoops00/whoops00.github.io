@@ -356,266 +356,108 @@
   </div>
 </header>
 
-      <div class="blank" style="padding-top: 0px;"></div>
-<div id="content" class="site-content">
+        <div class="pattern-center-blank"></div>
   
-  <div class="notice" style="margin-top:60px">
-    <i class="iconfont icon-notification">
-    </i>
-    <div class="notice-content">你现在所经历的挫折和失败，它只属于现在，把它交给时间，你会发现，一切都是最好的安排！</div>
-  </div>
-  
-  <div class="top-feature-row">
-  <h1 class="fes-title" style="font-family: 'Ubuntu', sans-serif;">
-  <i class="fa fa-anchor" aria-hidden="true">
-  </i>
-  START:DASH!!</h1>
-  
-  <div class="top-feature-v2">
-    <div class="the-feature square from_left_and_right">
-      <a href="/theme-sakura/" target="_blank">
-        <div class="img">
-          <img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/zt.jpg">
-        </div>
-        <div class="info">
-          <h3>Sakura</h3>
-          <p>爱车主题</p>
-        </div>
-      </a>
-    </div>
-  </div>
-  
-  <div class="top-feature-v2">
-    <div class="the-feature square from_left_and_right">
-      <a href="http://space.bilibili.com/420892995" target="_blank">
-        <div class="img">
-          <img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/bilibili.jpg">
-        </div>
-        <div class="info">
-          <h3>Bilibili</h3>
-          <p>博主的b站视频</p>
-        </div>
-      </a>
-    </div>
-  </div>
-  
-  <div class="top-feature-v2">
-    <div class="the-feature square from_left_and_right">
-      <a href="https://www.yuque.com/u421144" target="_blank">
-        <div class="img">
-          <img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/jsfx.jpg">
-        </div>
-        <div class="info">
-          <h3>xin的万事屋</h3>
-          <p>技术分享</p>
-        </div>
-      </a>
-    </div>
-  </div>
-  
-</div>
-  <div id="primary" class="content-area">
-    <main id="main" class="site-main" role="main">
-      <h1 class="main-title" style="font-family: 'Ubuntu', sans-serif;">
-      <i class="fa fa-envira" aria-hidden="true"></i>
-      Discovery</h1>
+  <div id="content" class="site-content">
+    <article class="post-item post-301 page type-page status-publish has-post-thumbnail hentry">
+      <p>title: lab<br>date: 2020-03-03 21:38:45<br>keywords: Java<br>description:<br>comments: true<br>photos: <a href="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/jvm内存布局.jpeg" target="_blank" rel="noopener">https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/jvm内存布局.jpeg</a></p>
+<h4 id="栈上分配："><a href="#栈上分配：" class="headerlink" title="栈上分配："></a>栈上分配：</h4><p>为什么要栈上分配？</p>
+<p>在一个应用程序中，其实有很多的对象的作用域都不会<strong>逃逸出方法</strong>外，也就是说该对象的<strong>生命周期会随着方法的调用开始而开始，方法的调用结束而结束</strong>。对于这种对象，如果分配在堆中，方法调用结束后就没有了引用指向这个对象，这种对象就是垃圾，等待GC回收，如果这种对象较多，无疑增加了GC的压力，所以<strong>JVM</strong>就提供了一种<strong>栈上分配</strong>。</p>
+<ul>
+<li>开启<strong>逃逸分析</strong>：</li>
+</ul>
+<p>如果一个对象想要在栈上分配，必须通过<strong>逃逸分析</strong>(-XX:+EliminateAllocations)。</p>
+<p><strong>逃逸分析的作用：</strong>分析对象的作用域是否会逃逸出方法之外，再server虚拟机模式下才可以开启（jdk1.6默认开启）</p>
+<ul>
+<li>开启<strong>标量替换</strong>： (-XX:+EliminateAllocations)</li>
+</ul>
+<p><strong>标量替换</strong>的作用是允许将对象根据属性打散后分配再栈上，默认该配置为开启</p>
+<p>可以通过配置 -XX:+PrintEscapeAnalysis 开启打印逃逸分析筛选结果</p>
+<h4 id="TLAB-Thread-Local-Allocation-Buffer"><a href="#TLAB-Thread-Local-Allocation-Buffer" class="headerlink" title="TLAB(Thread Local Allocation Buffer)"></a>TLAB(Thread Local Allocation Buffer)</h4><p>什么是<strong>TLAB</strong></p>
+<p>全称叫做：Thread Local Allocation Buffer 即线程本地分配缓存</p>
+<p>如何开启<strong>TLAB</strong></p>
+<p>JVM默认开启了<strong>TLAB</strong>功能，也可以使用<strong>-XX: +UseTLAB</strong> 显示开启</p>
+<p>如何观察<strong>TLAB</strong>使用情况</p>
+<p>JVM提供了<strong>-XX:+PrintTLAB</strong> 参数打开跟踪TLAB的使用情况</p>
+<p>如何调整<strong>TLAB</strong>默认大小</p>
+<p><strong>-XX:TLABSize</strong> 通过该参数指定分配给每一个线程的<strong>TLAB</strong>空间的大小</p>
+<p>总结一下<strong>TLAB</strong>：</p>
+<p>需要<strong>TLAB</strong>的原因就是提高对象在堆上的分配效率而采用的一种手段，就是给<strong>每个线程分配一小块私有的堆空间</strong>，即<strong>TLAB</strong>是一块线程私有的堆空间（实际上是<strong>Eden</strong>区中划出的）</p>
+<h2 id="栈上分配和TLAB对比"><a href="#栈上分配和TLAB对比" class="headerlink" title="栈上分配和TLAB对比"></a>栈上分配和TLAB对比</h2><table>
+<thead>
+<tr>
+<th align="center">名称</th>
+<th align="center">针对点</th>
+<th align="center">处于对象分配流程的位置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">栈上分配</td>
+<td align="center">避免GC无谓负担</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">TLAB</td>
+<td align="center">加速堆上对象的分配</td>
+<td align="center">2</td>
+</tr>
+</tbody></table>
+<h2 id="对象分配流程图"><a href="#对象分配流程图" class="headerlink" title="对象分配流程图"></a>对象分配流程图</h2><p>图片摘自<a href="https://blog.csdn.net/varyall/article/details/105949239" target="_blank" rel="noopener">实战Java虚拟机</a>一书</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy81MzYyMzU0LTA2NDljZjhjMjQyM2Q3MWYucG5nP2ltYWdlTW9ncjIvYXV0by1vcmllbnQvc3RyaXB8aW1hZ2VWaWV3Mi8yL3cvNDQ1L2Zvcm1hdC93ZWJw?x-oss-process=image/format,png" alt="img"></p>
+
+      <!-- .entry-content -->
       
-  <!-- 首页默认取最最新文章集 -->
-  
-    
-<article  class="post post-list-thumb post-list-thumb-left"  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
+<div id="vcomments"></div>
+<script>
+  window.onload = function(){
+      var valine = new Valine();
+      valine.init({
+        el: '#vcomments',
+        appId: "QmAWIjAcAhD7BRjzX36jwIgh-gzGzoHsz",
+        appKey: "zb079LewvVCeJVyVH2t4MVDq",
+        path: window.location.pathname,
+        placeholder: "你是我一生只会遇见一次的惊喜 ..."
+      })
+  }
+</script>
 
-  <div class="post-thumb">
-    <a href="/2020/03/03/栈上分配和TLAB/">
-      <img class="lazyload" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/jvm内存布局.jpeg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2020-3-3 21:03</div>
-      <a href="/2020/03/03/栈上分配和TLAB/" class="post-title">
-        <h3>关于 *栈上分配* 和 *TLAB*(Thread Local Allocation Buffer 即线程本地分配缓存)</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/2020/03/03/栈上分配和TLAB/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
+      <div class="single-reward">
+        <div class="reward-open">赏
+          <div class="reward-main">
+            <ul class="reward-row">
+              <li class="alipay-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/AliPayQR.jpg"></li>
+              <li class="wechat-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/WeChanSQ.jpg"></li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/2020/02/28/百度富文本UEditor在vue中的整合/">
-      <img class="lazyload" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/bd-UEditor.jpg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2020-2-28 21:02</div>
-      <a href="/2020/02/28/百度富文本UEditor在vue中的整合/" class="post-title">
-        <h3>百度富文本-Vue UEditor整合</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/2020/02/28/百度富文本UEditor在vue中的整合/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
+      <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
+      <footer class="post-footer">
+        <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
+        <div class="post-tags">
         </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb post-list-thumb-left"  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/2020/02/18/微信小程序-订阅消息/">
-      <img class="lazyload" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/wx-push.jpg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2020-2-18 21:02</div>
-      <a href="/2020/02/18/微信小程序-订阅消息/" class="post-title">
-        <h3>微信小程序 订阅消息</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/2020/02/18/微信小程序-订阅消息/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
+        <div class="post-share">
+          <div class="social-share sharehidden share-component"></div>
+          <i class="iconfont show-share icon-forward"></i>
         </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/2019/12/20/二叉树-平衡二叉树-红黑树-B树-B+树/">
-      <img class="lazyload" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/tree.jpg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2019-12-20 21:12</div>
-      <a href="/2019/12/20/二叉树-平衡二叉树-红黑树-B树-B+树/" class="post-title">
-        <h3>二叉树、平衡二叉树、红黑树、B树、B+树</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/2019/12/20/二叉树-平衡二叉树-红黑树-B树-B+树/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
+      </footer><!-- .entry-footer -->
+    </article>
+      <!-- #post-## -->
+      <section class="author-profile">
+        <div class="info" itemprop="author" itemscope="" itemtype="https://schema.org/Person">
+          <a href="/about/" class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/custom/x.jpg" itemprop="image" alt="KAM" height="70" width="70"></a>
+          <div class="meta">
+            <span class="title">Author</span>
+            <h3 itemprop="name">
+            <a href="https://whoops00.github.io" itemprop="url" rel="author">KAM</a>
+            </h3>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb post-list-thumb-left"  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/2019/11/20/POI千万级导入-导出Excel/">
-      <img class="lazyload" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/POI.jpg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2019-11-20 21:11</div>
-      <a href="/2019/11/20/POI千万级导入-导出Excel/" class="post-title">
-        <h3>POI千万级导入-导出(excel)</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/2019/11/20/POI千万级导入-导出Excel/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-
-
-    </main>
-      <!-- 首页默认取最最新文章集 -->
-    <!--  -->
-  </div>
-  
+        <hr>
+        <p><i class="iconfont icon-write"></i>只要我们能梦想的，我们就能实现 ！</p>
+      </section>
+  </div><!-- #primary -->
 </div>
-
     </div>    
     <div class="ins-search">
     <div class="ins-search-mask"></div>
