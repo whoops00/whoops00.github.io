@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">百度富文本-Vue UEditor整合 | 天网空间</title>
+  <title itemprop="name">Redis缓存穿透、缓存击穿、缓存雪崩： | 天网空间</title>
   
     <link rel="shortcut icon" href="/images/xin.ico">
   
@@ -339,107 +339,53 @@
   </div>
 </header>
 
-      <link rel="stylesheet" type="text/css" href="/css/sharejs.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
-<div class="pattern-center-blank"></div>
-
-  <div class="pattern-center single-center">
-    <!-- 有配图默认渲染第一张 -->
-    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/bd-UEditor.jpg);" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/bd-UEditor.jpg">
+        <div class="pattern-center-blank"></div>
+  
+    <div class="pattern-center ">
+      <div class="pattern-attachment-img">
+        <img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/redis.jpg" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+      </div>
+      <header class="pattern-header ">
+        <h1 class="entry-title">
+        Redis</h1>
+      </header>
     </div>
-    <header class="pattern-header single-header">
-      <h1 class="entry-title">
-      百度富文本-Vue UEditor整合</h1>
-      <p class="entry-census">
-        <span>
-          <a href="">
-            <img src="">
-          </a>
-        </span>
-        <span>
-          <a href=""></a>
-        </span>
-        <span class="bull">
-        ·</span>
-        2020-2-28<span class="bull">
-        ·</span>
-      <span id="busuanzi_value_page_pv"></span>次阅读</p>
-    </header>
-  </div>
+  
+  <div id="content" class="site-content">
+    <article class="post-item post-301 page type-page status-publish has-post-thumbnail hentry">
+      <h1 id="缓存穿透、缓存击穿、缓存雪崩："><a href="#缓存穿透、缓存击穿、缓存雪崩：" class="headerlink" title="缓存穿透、缓存击穿、缓存雪崩："></a>缓存穿透、缓存击穿、缓存雪崩：</h1><h2 id="缓存穿透："><a href="#缓存穿透：" class="headerlink" title="缓存穿透："></a>缓存穿透：</h2><p><strong>描述：</strong>缓存穿透是指<strong>缓存和数据库</strong>中都查询不到数据。</p>
+<p><strong>问题及安全性：</strong>访问一个不存在的key，缓存不起作用，请求会穿透到DB，流量大时DB会挂掉。如果有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
+<p><strong>解决方案：</strong></p>
+<p>1、简单粗暴的方法，从缓存取不到的数据，在数据库中也没有取到，这时也可以<strong>将key-value对写为key-null</strong>，缓存有效时间可以设置短点，如30秒（设置太长会导致正常情况下也没法使用）。这样可以防止攻击用户反复用同一个id暴力攻击；</p>
+<p>2、采用<strong>布隆过滤器</strong>，使用一个足够大的bitmap，用于存储可能访问的key，不存在的key直接被过滤，（如果数据量较大，需要占用较大空间）。</p>
+<p>3、<strong>拦截器</strong>，如用户鉴权校验，id做基础校验，id&lt;=0的直接拦截；</p>
+<h2 id="缓存击穿："><a href="#缓存击穿：" class="headerlink" title="缓存击穿："></a>缓存击穿：</h2><p><strong>描述：</strong>缓存击穿是指<strong>缓存中没有数据但数据库中有数据</strong>（一般是缓存时间到期）。</p>
+<p><strong>问题：</strong>如果并发用户特别多，同时读缓存没读到数据，又同时去数据库去取数据，引起数据库压力瞬间增大，造成过大压力。</p>
+<p><strong>解决方案：</strong></p>
+<p>1、<strong>设置热点数据永远不过期。</strong></p>
+<p>2、使用redis的<strong>分布式锁</strong>，即第一个请求去查询数据库并添加到缓存中，其后面的所有请求只需查询缓存无需查询数据库，从而减少数据库查询的巨大压力。</p>
+<blockquote>
+<p>单机Redis实例:</p>
+</blockquote>
+<blockquote>
+<p>多个Redis实例，请参阅<strong><a href="http://redis.cn/topics/distlock.html" target="_blank" rel="noopener">Redlock算法</a></strong></p>
+</blockquote>
+<p><strong>注意：1.  设置唯一锁名称防止误解锁；2.  需要设置锁的过期时间，防止死锁。</strong></p>
+<p><em>（1）redisTemplate实现（设置IfAbsent），无法实现可重入锁。</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 根据ID查询商品</span></span><br><span class="line"><span class="meta">@GetMapping</span>(<span class="string">"/&#123;id&#125;"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> R <span class="title">id</span><span class="params">(@PathVariable String id)</span></span>&#123;</span><br><span class="line">	<span class="comment">// 先查Redis缓存</span></span><br><span class="line">	Object o = redisTemplate.opsForValue().get(id);</span><br><span class="line">	<span class="keyword">if</span> (o != <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="comment">// 命中缓存</span></span><br><span class="line">		System.err.println(<span class="string">"id:"</span>+id+<span class="string">",命中redis缓存..."</span>);</span><br><span class="line">		<span class="keyword">return</span> R.success(o);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 缓存未命中 查询数据库</span></span><br><span class="line">	String lockKey = <span class="string">"lock"</span> + id;</span><br><span class="line">	<span class="comment">// 加锁，10s后过期</span></span><br><span class="line">	<span class="keyword">for</span> (;;) &#123;</span><br><span class="line">		<span class="keyword">if</span> (redisTemplate.opsForValue().setIfAbsent(lockKey, System.currentTimeMillis(), <span class="number">10L</span>, TimeUnit.SECONDS)) &#123;</span><br><span class="line">			<span class="comment">// 加锁成功的线程,再次检查</span></span><br><span class="line">			o = redisTemplate.opsForValue().get(id);</span><br><span class="line">			<span class="keyword">if</span> (o != <span class="keyword">null</span>) &#123;</span><br><span class="line">				<span class="comment">// 命中缓存</span></span><br><span class="line">				System.err.println(<span class="string">"Thread:"</span> + Thread.currentThread().getName() + <span class="string">",id:"</span>+id+<span class="string">",命中redis缓存..."</span>);</span><br><span class="line">				<span class="comment">// 释放锁</span></span><br><span class="line">				redisTemplate.delete(lockKey);</span><br><span class="line">				<span class="keyword">return</span> R.success(o);</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="comment">// 仍未命中</span></span><br><span class="line">			System.err.println(<span class="string">"Thread:"</span> + Thread.currentThread().getName() + <span class="string">",id:"</span> + id + <span class="string">",查询DB..."</span>);</span><br><span class="line">			Goods goods = goodsMapper.selectById(id);</span><br><span class="line">			<span class="comment">// 结果存入Redis</span></span><br><span class="line">			redisTemplate.opsForValue().set(id, goods);</span><br><span class="line">			<span class="comment">// 释放锁</span></span><br><span class="line">			redisTemplate.delete(lockKey);</span><br><span class="line">			<span class="keyword">return</span> R.success(goods);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 竞争不到锁，暂时让出CPU资源</span></span><br><span class="line">		Thread.yield();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<div id="content" class="site-content">
-  <div id="primary" class="content-area">
-    <main id="main" class="site-main" role="main">
-      <article id="post-1" class="post-1 post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
-        <div class="toc"></div>
-        <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
-        
-        <div class="entry-content">
-          <h1 id="百度富文本-vue-UEditor-整合"><a href="#百度富文本-vue-UEditor-整合" class="headerlink" title="百度富文本 vue UEditor 整合"></a>百度富文本 vue UEditor 整合</h1><p>查看文档请转移至：<br><a href="https://www.yuque.com/u421144/ztfidc/gky7eb" target="_blank" rel="noopener">百度富文本-Vue的整合</a></p>
+<p><em>（2）Redisson可实现可重入锁</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisSonTest</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    RedissonClient  redissonClient;<span class="comment">//实现分布式锁的</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    RedisUtil  redisUtil;<span class="comment">//获得redis的链接</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping</span>(value = <span class="string">"/redissontest"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String  <span class="title">RedisSonTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Jedis jedis = redisUtil.getJedis();</span><br><span class="line">        RLock redisSonLock = redissonClient.getLock(<span class="string">"redisSonLock"</span>);</span><br><span class="line">        <span class="comment">//加锁</span></span><br><span class="line">        redisSonLock.lock(<span class="number">10</span>, TimeUnit.MINUTES);<span class="comment">//有效期十分钟</span></span><br><span class="line"></span><br><span class="line">        String k = jedis.get(<span class="string">"k"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span>(k==<span class="keyword">null</span>)&#123;</span><br><span class="line">            k = <span class="string">"1"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">            <span class="keyword">int</span> inum = Integer.parseInt(k);<span class="comment">//获得value的值</span></span><br><span class="line">            jedis.set(<span class="string">"k"</span>, inum+<span class="number">1</span>+<span class="string">""</span>);<span class="comment">//value增加1</span></span><br><span class="line">            jedis.close();</span><br><span class="line"></span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 解锁</span></span><br><span class="line">            redisSonLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> k;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-        </div>
-        <!-- .entry-content -->
-        <div class="single-reward">
-          <div class="reward-open">赏
-            <div class="reward-main">
-              <ul class="reward-row">
-                <li class="alipay-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/AliPayQR.jpg"></li>
-                <li class="wechat-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/WeChanSQ.jpg"></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
-        <footer class="post-footer">
-          <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
-          <div class="post-tags">
-          </div>
-          <div class="post-share">
-            <div class="social-share sharehidden share-component"></div>
-            <i class="iconfont show-share icon-forward"></i>
-          </div>
-        </footer><!-- .entry-footer -->
-      </article>
-      <!-- #post-## -->
-      <div class="toc" style="background: none;"></div>
-      <section class="post-squares nextprev">
-        
-          
-            <div class="post-nepre half previous">
-          
-            <a href="/2020/03/03/栈上分配和TLAB/" rel="prev">
-              <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/jvm内存布局.jpeg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/jvm内存布局.jpeg">
-              </div>
-              <span class="label">
-              Previous Post</span>
-              <div class="info">
-                <h3>
-                关于 *栈上分配* 和 *TLAB*(Thread Local Allocation Buffer 即线程本地分配缓存)</h3>
-                <hr>
-              </div>
-            </a>
-          </div>
-        
-        
-          
-            <div class="post-nepre half next">
-          
-            <a href="/2020/02/18/微信小程序-订阅消息/" rel="next">
-              <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/wx-push.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/wx-push.jpg">
-              </div>
-              <span class="label">
-              Next Post</span>
-              <div class="info">
-                <h3>
-                微信小程序 订阅消息</h3>
-                <hr>
-              </div>
-            </a>
-          </div>
-        
-      </section>
+<h2 id="缓存雪崩："><a href="#缓存雪崩：" class="headerlink" title="缓存雪崩："></a>缓存雪崩：</h2><p><strong>描述：</strong>redis中大量的热点数据<strong>缓存集体失效</strong>。</p>
+<p><strong>问题：</strong>当有大量请求的时候，就会导致这些请求全部发到数据库上，DB瞬时压力过重雪崩。</p>
+<p><strong>解决方案：</strong></p>
+<p>1、设置<strong>随机过期时间</strong>，避免同一时刻缓存大量失效。（当redis数据库崩溃的时候也会导致缓存雪崩）</p>
+<p>2、使用google的<strong>Guava</strong>本地缓存，防止redis崩溃引起的雪崩。（JVM宕机后本地缓存会失效）</p>
+<p>3、<strong>建立分布式集群</strong>： 将redis缓存分块存储到多台redis服务器上（防止单个redis崩溃导致缓存雪崩），这样就会减小缓存集体失效的概率。</p>
+<p>4、设置热点数据<strong>永远不过期</strong>。</p>
+
+      <!-- .entry-content -->
       
 <div id="vcomments"></div>
 <script>
@@ -455,25 +401,43 @@
   }
 </script>
 
+      <div class="single-reward">
+        <div class="reward-open">赏
+          <div class="reward-main">
+            <ul class="reward-row">
+              <li class="alipay-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/AliPayQR.jpg"></li>
+              <li class="wechat-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/WeChanSQ.jpg"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
+      <footer class="post-footer">
+        <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 技术共享及个人知识记录，如有错误或侵权，请留言谢谢！</a></div>
+        <div class="post-tags">
+        </div>
+        <div class="post-share">
+          <div class="social-share sharehidden share-component"></div>
+          <i class="iconfont show-share icon-forward"></i>
+        </div>
+      </footer><!-- .entry-footer -->
+    </article>
+      <!-- #post-## -->
       <section class="author-profile">
         <div class="info" itemprop="author" itemscope="" itemtype="https://schema.org/Person">
-          <a href="" class="profile gravatar"><img src="" itemprop="image" alt="" height="70" width="70"></a>
+          <a href="/about/" class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/custom/x.jpg" itemprop="image" alt="KAM" height="70" width="70"></a>
           <div class="meta">
             <span class="title">Author</span>
             <h3 itemprop="name">
-            <a href="" itemprop="url" rel="author"></a>
+            <a href="https://whoops00.github.io" itemprop="url" rel="author">KAM</a>
             </h3>
           </div>
         </div>
         <hr>
-        <p><i class="iconfont icon-write"></i></p>
+        <p><i class="iconfont icon-write"></i>只要我们能梦想的，我们就能实现 ！</p>
       </section>
-    </main><!-- #main -->
   </div><!-- #primary -->
 </div>
-
-
-
     </div>    
     <div class="ins-search">
     <div class="ins-search-mask"></div>
