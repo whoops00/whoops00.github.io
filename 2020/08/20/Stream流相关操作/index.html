@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">关于 *栈上分配* 和 *TLAB*(Thread Local Allocation Buffer 即线程本地分配缓存) | 天网空间</title>
+  <title itemprop="name">Stream流相关操作 | 天网空间</title>
   
     <link rel="shortcut icon" href="/images/xin.ico">
   
@@ -345,11 +345,11 @@
 
   <div class="pattern-center single-center">
     <!-- 有配图默认渲染第一张 -->
-    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/jvm内存布局.jpeg);" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/jvm内存布局.jpeg">
+    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/Stream流.jpg);" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/Stream流.jpg">
     </div>
     <header class="pattern-header single-header">
       <h1 class="entry-title">
-      关于 *栈上分配* 和 *TLAB*(Thread Local Allocation Buffer 即线程本地分配缓存)</h1>
+      Stream流相关操作</h1>
       <p class="entry-census">
         <span>
           <a href="">
@@ -361,7 +361,7 @@
         </span>
         <span class="bull">
         ·</span>
-        2020-3-3<span class="bull">
+        2020-8-20<span class="bull">
         ·</span>
       <span id="busuanzi_value_page_pv"></span>次阅读</p>
     </header>
@@ -375,49 +375,91 @@
         <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
         
         <div class="entry-content">
-          <h4 id="栈上分配："><a href="#栈上分配：" class="headerlink" title="栈上分配："></a>栈上分配：</h4><p>为什么要栈上分配？</p>
-<p>在一个应用程序中，其实有很多的对象的作用域都不会<strong>逃逸出方法</strong>外，也就是说该对象的<strong>生命周期会随着方法的调用开始而开始，方法的调用结束而结束</strong>。对于这种对象，如果分配在堆中，方法调用结束后就没有了引用指向这个对象，这种对象就是垃圾，等待GC回收，如果这种对象较多，无疑增加了GC的压力，所以<strong>JVM</strong>就提供了一种<strong>栈上分配</strong>。</p>
-<ul>
-<li>开启<strong>逃逸分析</strong>：</li>
+          <h1 id="Stream流相关操作"><a href="#Stream流相关操作" class="headerlink" title="Stream流相关操作"></a>Stream流相关操作</h1><h2 id="Stream流"><a href="#Stream流" class="headerlink" title="Stream流"></a>Stream流</h2><h4 id="一、Stream的中间操作"><a href="#一、Stream的中间操作" class="headerlink" title="一、Stream的中间操作"></a>一、Stream的中间操作</h4><ul>
+<li><p><strong>distinct()</strong>：去重<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User.Stream().distinct()</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>filter</strong>：过滤<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">students.stream().filter(student -&gt; <span class="string">"清华大学"</span>.equals(student.getSchool())).collect(Collectors.toList());</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>limit</strong>：limit操作也类似于SQL语句中的<code>LIMIT</code>关键字，不过相对功能较弱，limit返回包含前n个元素的流，当集合大小小于n时，则返回实际长度。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">students.stream().filter(student -&gt; <span class="string">"计算机"</span>.equals(student.getMajor())).limit(<span class="number">2</span>).collect(Collectors.toList());</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>.sorted()</strong> ：排序<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 状态排序</span></span><br><span class="line">orderListDTOS.stream().sorted(Comparator.comparing(OrderListDTO::getOrderStatusStr)</span><br><span class="line">          <span class="comment">// 评价时间 为null靠前</span></span><br><span class="line">          .thenComparing(OrderListDTO::getEvaluateTime, Comparator.nullsFirst(String::compareTo).reversed())</span><br><span class="line">          <span class="comment">// 下单时间 倒序</span></span><br><span class="line">          .thenComparing(OrderListDTO::getOrderTime, Comparator.nullsFirst(String::compareTo)).reversed())</span><br><span class="line">          <span class="comment">// 赋值给新集合 进行保存</span></span><br><span class="line">          .collect(Collectors.toList()).forEach(order -&gt; &#123;</span><br><span class="line">			OrderListDTO orderListDTO = <span class="keyword">new</span> OrderListDTO();</span><br><span class="line">			BeanUtils.copyProperties(order, orderListDTO);</span><br><span class="line">			orders.add(orderListDTO);</span><br><span class="line">		&#125;);</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>skip</strong>：是跳过前n个元素<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">students.stream().filter(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor())).skip(<span class="number">2</span>)</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>of</strong>：实现判断<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">String status = pouch.getStatus();</span><br><span class="line"><span class="keyword">if</span> (Stream.of(</span><br><span class="line">        <span class="string">"Finalized"</span>,</span><br><span class="line">        <span class="string">"Ready"</span>,</span><br><span class="line">        <span class="string">"Checkout"</span>,</span><br><span class="line">        <span class="string">"Confirmed"</span>,</span><br><span class="line">        <span class="string">"Book"</span>,</span><br><span class="line">        <span class="string">"Started"</span>,</span><br><span class="line">        <span class="string">"Inital"</span>,</span><br><span class="line">        <span class="string">"Close"</span>)</span><br><span class="line">        .anyMatch(status::equals)) &#123;<span class="comment">// anyMatch：检测是否存在一个或多个满足指定的参数行为</span></span><br><span class="line">    <span class="comment">// 逻辑代码块</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</li>
 </ul>
-<p>如果一个对象想要在栈上分配，必须通过<strong>逃逸分析</strong>(-XX:+EliminateAllocations)。</p>
-<p><strong>逃逸分析的作用：</strong>分析对象的作用域是否会逃逸出方法之外，再server虚拟机模式下才可以开启（jdk1.6默认开启）</p>
+<h4 id="二、终端操作："><a href="#二、终端操作：" class="headerlink" title="二、终端操作："></a>二、终端操作：</h4><p><strong>2.1  查找：</strong></p>
 <ul>
-<li>开启<strong>标量替换</strong>： (-XX:+EliminateAllocations)</li>
+<li><p><strong>allMatch</strong>：allMatch用于<strong>检测是否全部都满足指定的参数行为</strong>，如果全部满足则返回true，如下：学生年龄是否大于等于18。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> isAdult = students.stream().allMatch(student -&gt; student.getAge() &gt;= <span class="number">18</span>);</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>anyMatch</strong>：anyMatch则是<strong>检测是否存在一个或多个满足指定的参数行为</strong>，如果满足则返回true，如下：所有学生中是否有清华大学的学生。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> hasWhu = students.stream().anyMatch(student -&gt; <span class="string">"清华大学"</span>.equals(student.getSchool()));</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>noneMathch</strong>：noneMatch用于<strong>检测是否不存在满足指定行为的元素</strong>，如果不存在则返回true，如下：检测是否不存在专业为计算机科学的学生。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> noneCs = students.stream().noneMatch(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor()));</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>findFirst</strong>：<strong>用于返回满足条件的第一个元素</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">students.stream().filter(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor())).findFirst();</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>findAny</strong>：<strong>相对于findFirst的区别在于，findAny不一定返回第一个，而是返回任意一个</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">students.stream().filter(student -&gt; <span class="string">"计算机"</span>.equals(student.getMajor())).findAny();</span><br></pre></td></tr></table></figure></p>
+</li>
 </ul>
-<p><strong>标量替换</strong>的作用是允许将对象根据属性打散后分配再栈上，默认该配置为开启</p>
-<p>可以通过配置 -XX:+PrintEscapeAnalysis 开启打印逃逸分析筛选结果</p>
-<h4 id="TLAB-Thread-Local-Allocation-Buffer"><a href="#TLAB-Thread-Local-Allocation-Buffer" class="headerlink" title="TLAB(Thread Local Allocation Buffer)"></a>TLAB(Thread Local Allocation Buffer)</h4><p>什么是<strong>TLAB</strong></p>
-<p>全称叫做：Thread Local Allocation Buffer 即线程本地分配缓存</p>
-<p>如何开启<strong>TLAB</strong></p>
-<p>JVM默认开启了<strong>TLAB</strong>功能，也可以使用<strong>-XX: +UseTLAB</strong> 显示开启</p>
-<p>如何观察<strong>TLAB</strong>使用情况</p>
-<p>JVM提供了<strong>-XX:+PrintTLAB</strong> 参数打开跟踪TLAB的使用情况</p>
-<p>如何调整<strong>TLAB</strong>默认大小</p>
-<p><strong>-XX:TLABSize</strong> 通过该参数指定分配给每一个线程的<strong>TLAB</strong>空间的大小</p>
-<p>总结一下<strong>TLAB</strong>：</p>
-<p>需要<strong>TLAB</strong>的原因就是提高对象在堆上的分配效率而采用的一种手段，就是给<strong>每个线程分配一小块私有的堆空间</strong>，即<strong>TLAB</strong>是一块线程私有的堆空间（实际上是<strong>Eden</strong>区中划出的）</p>
-<h2 id="栈上分配和TLAB对比"><a href="#栈上分配和TLAB对比" class="headerlink" title="栈上分配和TLAB对比"></a>栈上分配和TLAB对比</h2><table>
-<thead>
-<tr>
-<th align="center">名称</th>
-<th align="center">针对点</th>
-<th align="center">处于对象分配流程的位置</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">栈上分配</td>
-<td align="center">避免GC无谓负担</td>
-<td align="center">1</td>
-</tr>
-<tr>
-<td align="center">TLAB</td>
-<td align="center">加速堆上对象的分配</td>
-<td align="center">2</td>
-</tr>
-</tbody></table>
-<h2 id="对象分配流程图"><a href="#对象分配流程图" class="headerlink" title="对象分配流程图"></a>对象分配流程图</h2><p>图片摘自<a href="https://blog.csdn.net/varyall/article/details/105949239" target="_blank" rel="noopener">实战Java虚拟机</a>一书</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy81MzYyMzU0LTA2NDljZjhjMjQyM2Q3MWYucG5nP2ltYWdlTW9ncjIvYXV0by1vcmllbnQvc3RyaXB8aW1hZ2VWaWV3Mi8yL3cvNDQ1L2Zvcm1hdC93ZWJw?x-oss-process=image/format,png" alt="img"></p>
+<blockquote>
+<p>实际上对于顺序流式处理而言，findFirst和findAny返回的结果是一样的，至于为什么会这样设计，是因为在下一篇我们介绍的<strong>并行流式处理</strong>，当我们启用并行流式处理的时候，查找第一个元素往往会有很多限制，如果不是特别需求，在<strong>并行流式处理中使用findAny的性能要比findFirst好</strong>。</p>
+</blockquote>
+<p><strong>2.2  归约：</strong></p>
+<blockquote>
+<p>我们大部分都是通过<strong><code>collect(Collectors.toList())</code>对数据封装返回</strong>，如我的目标不是返回一个新的集合，而是希望对经过参数化操作后的集合进行进一步的运算，那么我们可用对<strong>集合实施归约</strong>操作。java8的流式处理提供了<strong><code>reduce</code></strong>方法来达到这一目的。</p>
+</blockquote>
+<p>前面我们通过mapToInt将<code>Stream&lt;Student&gt;</code>映射成为<code>IntStream</code>，并通过<code>IntStream</code>的sum方法求得所有学生的年龄之和，实际上我们通过归约操作，也可以达到这一目的，实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 前面例子中的方法</span></span><br><span class="line"><span class="keyword">int</span> totalAge = students.stream()</span><br><span class="line">                .filter(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor()))</span><br><span class="line">                .mapToInt(Student::getAge).sum();</span><br><span class="line"><span class="comment">// 归约操作</span></span><br><span class="line"><span class="keyword">int</span> totalAge = students.stream()</span><br><span class="line">                .filter(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor()))</span><br><span class="line">                .map(Student::getAge)</span><br><span class="line">                .reduce(<span class="number">0</span>, (a, b) -&gt; a + b);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 进一步简化</span></span><br><span class="line"><span class="keyword">int</span> totalAge2 = students.stream()</span><br><span class="line">                .filter(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor()))</span><br><span class="line">                .map(Student::getAge)</span><br><span class="line">                .reduce(<span class="number">0</span>, Integer::sum);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 采用无初始值的重载版本，需要注意返回Optional</span></span><br><span class="line">Optional&lt;Integer&gt; totalAge = students.stream()</span><br><span class="line">                .filter(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor()))</span><br><span class="line">                .map(Student::getAge)</span><br><span class="line">                .reduce(Integer::sum);  <span class="comment">// 去掉初始值</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>2.3  收集：</strong></p>
+<p>前面利用<strong><code>collect(Collectors.toList())</code>是一个简单的收集操作，是对处理结果的封装</strong>，对应的还有<strong><code>toSet</code>、<code>toMap</code></strong>，以满足我们对于结果组织的需求。这些方法均来自于<code>java.util.stream.Collectors</code>，我们可以称之为收集器。</p>
+<p><strong>2.3.1  规约：</strong></p>
+<blockquote>
+<p><strong>收集器也提供了相应的归约操作</strong>，但是与reduce在内部实现上是有区别的<strong>，收集器更加适用于可变容器上的归约操作</strong>，这些收集器广义上均基于<strong><code>Collectors.reducing()</code></strong>实现。</p>
+</blockquote>
+<p>(1). 求学生总数：<strong>.count()、Collectors.counting()</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> count = students.stream().collect(Collectors.counting());</span><br><span class="line"><span class="comment">// 进一步简化</span></span><br><span class="line"><span class="keyword">long</span> count = students.stream().count();</span><br></pre></td></tr></table></figure>
+
+<p>(2). 求最大值和最小值：<strong>Collectors.maxBy、Collectors.minBy</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 求最大年龄</span></span><br><span class="line">Optional&lt;Student&gt; olderStudent = students.stream().collect(Collectors.maxBy((s1, s2) -&gt; s1.getAge() - s2.getAge()));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 进一步简化</span></span><br><span class="line">Optional&lt;Student&gt; olderStudent2 = students.stream().collect(Collectors.maxBy(Comparator.comparing(Student::getAge)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 求最小年龄</span></span><br><span class="line">Optional&lt;Student&gt; olderStudent3 = students.stream().collect(Collectors.minBy(Comparator.comparing(Student::getAge)));</span><br></pre></td></tr></table></figure>
+
+<p>(3). 求总和：<strong>Collectors.summingInt</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> totalAge4 = students.stream().collect(Collectors.summingInt(Student::getAge));</span><br><span class="line"><span class="comment">// 对应的还有summingLong、summingDouble。</span></span><br></pre></td></tr></table></figure>
+
+<pre><code>求平均值：**Collectors.averagingInt**</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> avgAge = students.stream().collect(Collectors.averagingInt(Student::getAge));</span><br><span class="line"><span class="comment">// 对应的还有averagingLong、averagingDouble。</span></span><br></pre></td></tr></table></figure>
+
+<pre><code>一次性得到元素个数、总和、均值、最大值、最小值:</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">IntSummaryStatistics statistics = students.stream().collect(Collectors.summarizingInt(Student::getAge));</span><br><span class="line"><span class="comment">// 输出：</span></span><br><span class="line">IntSummaryStatistics&#123;count=<span class="number">10</span>, sum=<span class="number">220</span>, min=<span class="number">20</span>, average=<span class="number">22.000000</span>, max=<span class="number">24</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><em><em>对应的还有<code>summarizingLong</code>、<code>summarizingDouble</code>…</em></em></strong></p>
+<p>(4).  字符串拼接 :   <strong>Collectors.joining(“”)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">String names = students.stream().map(Student::getName).collect(Collectors.joining());</span><br><span class="line"><span class="comment">// 输出：孔明伯约玄德云长翼德元直奉孝仲谋鲁肃丁奉</span></span><br><span class="line">String names = students.stream().map(Student::getName).collect(Collectors.joining(<span class="string">", "</span>));</span><br><span class="line"><span class="comment">// 输出：孔明, 伯约, 玄德, 云长, 翼德, 元直, 奉孝, 仲谋, 鲁肃, 丁奉</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>2.3.2   分组：</strong></p>
+<p>在数据库操作中，我们可以通过<strong><code>GROUP BY</code>关键字对查询到的数据进行分组</strong>，java8的流式处理也为我们提供了这样的功能<strong><code>Collectors.groupingBy</code></strong>来操作集合：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">students.stream().collect(</span><br><span class="line">                Collectors.groupingBy(Student::getSchool,  <span class="comment">// 一级分组，按学校</span></span><br><span class="line">                Collectors.groupingBy(Student::getMajor)));  <span class="comment">// 二级分组，按专业</span></span><br></pre></td></tr></table></figure>
+
+<p>实际上在<code>groupingBy</code>的第二个参数不是只能传递groupingBy，还可以传递任意<code>Collector</code>类型，比如我们可以传递一个<code>Collector.counting</code>，用以统计每个组的个数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, Long&gt; groups = students.stream().collect(Collectors.groupingBy(Student::getSchool, Collectors.counting()));</span><br></pre></td></tr></table></figure>
+
+<p><em>如果我们不添加第二个参数，则编译器会默认帮我们添加一个<code>Collectors.toList()</code>。</em></p>
+<p><strong>2.3.3    分区：</strong></p>
+<p>分区可以看做是分组的一种特殊情况，在分区中key只有两种情况：true或false，目的是<strong>将待分区集合按照条件一分为二</strong>，处理利用<strong>c<code>ollectors.partitioningBy()</code></strong>方法实现分区，该方法接收一个谓词，例如我们希望将学生分为武大学生和非武大学生，那么可以实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;Boolean, List&lt;Student&gt;&gt; partition = students.stream().collect(Collectors.partitioningBy(student -&gt; <span class="string">"武汉大学"</span>.equals(student.getSchool())));</span><br></pre></td></tr></table></figure>
+
+<p><strong>例如：比如将数组分为奇数和偶数。</strong></p>
+<h4 id="三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）"><a href="#三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）" class="headerlink" title="三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）"></a>三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list.parallelStream().map(e -&gt; e + 3).collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>parallelStream</strong>在处理大的数据量的集合时使用，但是线程不安全，可以先<strong>map</strong>，再<strong>.collect(Collectors.toList()</strong>，<strong>.collect(Collectors.toList()</strong>可以封装一个List集合返回，还可以保证线程安全。</p>
+</blockquote>
+<p><strong>——-错误记录：——-</strong></p>
+<p>1、<strong>Collectors.toMap    value为null报错</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, Integer&gt; map3 = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">0</span>);</span><br><span class="line">map3 = list3.stream().collect(Collectors.toMap(</span><br><span class="line">							list3 -&gt; Optional.ofNullable(list3).map(SpGoodsIdAndCount::getGoodsId).orElse(<span class="string">""</span>)</span><br><span class="line">							, list3 -&gt; Optional.ofNullable(list3).map(SpGoodsIdAndCount::getCount).orElse(<span class="number">0</span>)</span><br><span class="line">							, (key1, key2) -&gt; key2));</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>解析：<br>Collectors.toMap(）：list集合转换为map，通过Optional判断当key和value为null时赋予默认值。<br>(key1, key2) -&gt; key2)：当key重复时，选择key2作为新的key值。</p>
+</blockquote>
 
         </div>
         <!-- .entry-content -->
@@ -449,15 +491,15 @@
           
             <div class="post-nepre half previous">
           
-            <a href="/2020/06/22/Method queryTotal execution error of sql：SELECT COUNT(1)...%0D/" rel="prev">
+            <a href="/2020/09/01/Mysql调优详解/" rel="prev">
               <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/dbquery.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/dbquery.jpg">
+                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/Mysql调优.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/Mysql调优.jpg">
               </div>
               <span class="label">
               Previous Post</span>
               <div class="info">
                 <h3>
-                Mysql查询语句错误</h3>
+                Mysql调优详解</h3>
                 <hr>
               </div>
             </a>
@@ -467,15 +509,15 @@
           
             <div class="post-nepre half next">
           
-            <a href="/2020/02/28/百度富文本UEditor在vue中的整合/" rel="next">
+            <a href="/2020/08/08/request.getParameter(____)获取不到值/" rel="next">
               <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/bd-UEditor.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/bd-UEditor.jpg">
+                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/request.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/request.jpg">
               </div>
               <span class="label">
               Next Post</span>
               <div class="info">
                 <h3>
-                百度富文本-Vue UEditor整合</h3>
+                request.getParameter(&amp;quot;**&amp;quot;)获取不到值</h3>
                 <hr>
               </div>
             </a>

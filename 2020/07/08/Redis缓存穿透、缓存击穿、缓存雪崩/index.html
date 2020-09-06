@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">关于 *栈上分配* 和 *TLAB*(Thread Local Allocation Buffer 即线程本地分配缓存) | 天网空间</title>
+  <title itemprop="name">Redis缓存穿透、缓存击穿、缓存雪崩： | 天网空间</title>
   
     <link rel="shortcut icon" href="/images/xin.ico">
   
@@ -345,11 +345,11 @@
 
   <div class="pattern-center single-center">
     <!-- 有配图默认渲染第一张 -->
-    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/jvm内存布局.jpeg);" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/jvm内存布局.jpeg">
+    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/redis.jpg);" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/redis.jpg">
     </div>
     <header class="pattern-header single-header">
       <h1 class="entry-title">
-      关于 *栈上分配* 和 *TLAB*(Thread Local Allocation Buffer 即线程本地分配缓存)</h1>
+      Redis缓存穿透、缓存击穿、缓存雪崩：</h1>
       <p class="entry-census">
         <span>
           <a href="">
@@ -361,7 +361,7 @@
         </span>
         <span class="bull">
         ·</span>
-        2020-3-3<span class="bull">
+        2020-7-8<span class="bull">
         ·</span>
       <span id="busuanzi_value_page_pv"></span>次阅读</p>
     </header>
@@ -375,49 +375,37 @@
         <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
         
         <div class="entry-content">
-          <h4 id="栈上分配："><a href="#栈上分配：" class="headerlink" title="栈上分配："></a>栈上分配：</h4><p>为什么要栈上分配？</p>
-<p>在一个应用程序中，其实有很多的对象的作用域都不会<strong>逃逸出方法</strong>外，也就是说该对象的<strong>生命周期会随着方法的调用开始而开始，方法的调用结束而结束</strong>。对于这种对象，如果分配在堆中，方法调用结束后就没有了引用指向这个对象，这种对象就是垃圾，等待GC回收，如果这种对象较多，无疑增加了GC的压力，所以<strong>JVM</strong>就提供了一种<strong>栈上分配</strong>。</p>
-<ul>
-<li>开启<strong>逃逸分析</strong>：</li>
-</ul>
-<p>如果一个对象想要在栈上分配，必须通过<strong>逃逸分析</strong>(-XX:+EliminateAllocations)。</p>
-<p><strong>逃逸分析的作用：</strong>分析对象的作用域是否会逃逸出方法之外，再server虚拟机模式下才可以开启（jdk1.6默认开启）</p>
-<ul>
-<li>开启<strong>标量替换</strong>： (-XX:+EliminateAllocations)</li>
-</ul>
-<p><strong>标量替换</strong>的作用是允许将对象根据属性打散后分配再栈上，默认该配置为开启</p>
-<p>可以通过配置 -XX:+PrintEscapeAnalysis 开启打印逃逸分析筛选结果</p>
-<h4 id="TLAB-Thread-Local-Allocation-Buffer"><a href="#TLAB-Thread-Local-Allocation-Buffer" class="headerlink" title="TLAB(Thread Local Allocation Buffer)"></a>TLAB(Thread Local Allocation Buffer)</h4><p>什么是<strong>TLAB</strong></p>
-<p>全称叫做：Thread Local Allocation Buffer 即线程本地分配缓存</p>
-<p>如何开启<strong>TLAB</strong></p>
-<p>JVM默认开启了<strong>TLAB</strong>功能，也可以使用<strong>-XX: +UseTLAB</strong> 显示开启</p>
-<p>如何观察<strong>TLAB</strong>使用情况</p>
-<p>JVM提供了<strong>-XX:+PrintTLAB</strong> 参数打开跟踪TLAB的使用情况</p>
-<p>如何调整<strong>TLAB</strong>默认大小</p>
-<p><strong>-XX:TLABSize</strong> 通过该参数指定分配给每一个线程的<strong>TLAB</strong>空间的大小</p>
-<p>总结一下<strong>TLAB</strong>：</p>
-<p>需要<strong>TLAB</strong>的原因就是提高对象在堆上的分配效率而采用的一种手段，就是给<strong>每个线程分配一小块私有的堆空间</strong>，即<strong>TLAB</strong>是一块线程私有的堆空间（实际上是<strong>Eden</strong>区中划出的）</p>
-<h2 id="栈上分配和TLAB对比"><a href="#栈上分配和TLAB对比" class="headerlink" title="栈上分配和TLAB对比"></a>栈上分配和TLAB对比</h2><table>
-<thead>
-<tr>
-<th align="center">名称</th>
-<th align="center">针对点</th>
-<th align="center">处于对象分配流程的位置</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">栈上分配</td>
-<td align="center">避免GC无谓负担</td>
-<td align="center">1</td>
-</tr>
-<tr>
-<td align="center">TLAB</td>
-<td align="center">加速堆上对象的分配</td>
-<td align="center">2</td>
-</tr>
-</tbody></table>
-<h2 id="对象分配流程图"><a href="#对象分配流程图" class="headerlink" title="对象分配流程图"></a>对象分配流程图</h2><p>图片摘自<a href="https://blog.csdn.net/varyall/article/details/105949239" target="_blank" rel="noopener">实战Java虚拟机</a>一书</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy81MzYyMzU0LTA2NDljZjhjMjQyM2Q3MWYucG5nP2ltYWdlTW9ncjIvYXV0by1vcmllbnQvc3RyaXB8aW1hZ2VWaWV3Mi8yL3cvNDQ1L2Zvcm1hdC93ZWJw?x-oss-process=image/format,png" alt="img"></p>
+          <h1 id="缓存穿透、缓存击穿、缓存雪崩："><a href="#缓存穿透、缓存击穿、缓存雪崩：" class="headerlink" title="缓存穿透、缓存击穿、缓存雪崩："></a>缓存穿透、缓存击穿、缓存雪崩：</h1><h2 id="缓存穿透："><a href="#缓存穿透：" class="headerlink" title="缓存穿透："></a>缓存穿透：</h2><p><strong>描述：</strong>缓存穿透是指<strong>缓存和数据库</strong>中都查询不到数据。</p>
+<p><strong>问题及安全性：</strong>访问一个不存在的key，缓存不起作用，请求会穿透到DB，流量大时DB会挂掉。如果有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
+<p><strong>解决方案：</strong></p>
+<p>1、简单粗暴的方法，从缓存取不到的数据，在数据库中也没有取到，这时也可以<strong>将key-value对写为key-null</strong>，缓存有效时间可以设置短点，如30秒（设置太长会导致正常情况下也没法使用）。这样可以防止攻击用户反复用同一个id暴力攻击；</p>
+<p>2、采用<strong>布隆过滤器</strong>，使用一个足够大的bitmap，用于存储可能访问的key，不存在的key直接被过滤，（如果数据量较大，需要占用较大空间）。</p>
+<p>3、<strong>拦截器</strong>，如用户鉴权校验，id做基础校验，id&lt;=0的直接拦截；</p>
+<h2 id="缓存击穿："><a href="#缓存击穿：" class="headerlink" title="缓存击穿："></a>缓存击穿：</h2><p><strong>描述：</strong>缓存击穿是指<strong>缓存中没有数据但数据库中有数据</strong>（一般是缓存时间到期）。</p>
+<p><strong>问题：</strong>如果并发用户特别多，同时读缓存没读到数据，又同时去数据库去取数据，引起数据库压力瞬间增大，造成过大压力。</p>
+<p><strong>解决方案：</strong></p>
+<p>1、<strong>设置热点数据永远不过期。</strong></p>
+<p>2、使用redis的<strong>分布式锁</strong>，即第一个请求去查询数据库并添加到缓存中，其后面的所有请求只需查询缓存无需查询数据库，从而减少数据库查询的巨大压力。</p>
+<blockquote>
+<p>单机Redis实例:</p>
+</blockquote>
+<blockquote>
+<p>多个Redis实例，请参阅<strong><a href="http://redis.cn/topics/distlock.html" target="_blank" rel="noopener">Redlock算法</a></strong></p>
+</blockquote>
+<p><strong>注意：1.  设置唯一锁名称防止误解锁；2.  需要设置锁的过期时间，防止死锁。</strong></p>
+<p><em>（1）redisTemplate实现（设置IfAbsent），无法实现可重入锁。</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 根据ID查询商品</span></span><br><span class="line"><span class="meta">@GetMapping</span>(<span class="string">"/&#123;id&#125;"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> R <span class="title">id</span><span class="params">(@PathVariable String id)</span></span>&#123;</span><br><span class="line">	<span class="comment">// 先查Redis缓存</span></span><br><span class="line">	Object o = redisTemplate.opsForValue().get(id);</span><br><span class="line">	<span class="keyword">if</span> (o != <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="comment">// 命中缓存</span></span><br><span class="line">		System.err.println(<span class="string">"id:"</span>+id+<span class="string">",命中redis缓存..."</span>);</span><br><span class="line">		<span class="keyword">return</span> R.success(o);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 缓存未命中 查询数据库</span></span><br><span class="line">	String lockKey = <span class="string">"lock"</span> + id;</span><br><span class="line">	<span class="comment">// 加锁，10s后过期</span></span><br><span class="line">	<span class="keyword">for</span> (;;) &#123;</span><br><span class="line">		<span class="keyword">if</span> (redisTemplate.opsForValue().setIfAbsent(lockKey, System.currentTimeMillis(), <span class="number">10L</span>, TimeUnit.SECONDS)) &#123;</span><br><span class="line">			<span class="comment">// 加锁成功的线程,再次检查</span></span><br><span class="line">			o = redisTemplate.opsForValue().get(id);</span><br><span class="line">			<span class="keyword">if</span> (o != <span class="keyword">null</span>) &#123;</span><br><span class="line">				<span class="comment">// 命中缓存</span></span><br><span class="line">				System.err.println(<span class="string">"Thread:"</span> + Thread.currentThread().getName() + <span class="string">",id:"</span>+id+<span class="string">",命中redis缓存..."</span>);</span><br><span class="line">				<span class="comment">// 释放锁</span></span><br><span class="line">				redisTemplate.delete(lockKey);</span><br><span class="line">				<span class="keyword">return</span> R.success(o);</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="comment">// 仍未命中</span></span><br><span class="line">			System.err.println(<span class="string">"Thread:"</span> + Thread.currentThread().getName() + <span class="string">",id:"</span> + id + <span class="string">",查询DB..."</span>);</span><br><span class="line">			Goods goods = goodsMapper.selectById(id);</span><br><span class="line">			<span class="comment">// 结果存入Redis</span></span><br><span class="line">			redisTemplate.opsForValue().set(id, goods);</span><br><span class="line">			<span class="comment">// 释放锁</span></span><br><span class="line">			redisTemplate.delete(lockKey);</span><br><span class="line">			<span class="keyword">return</span> R.success(goods);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 竞争不到锁，暂时让出CPU资源</span></span><br><span class="line">		Thread.yield();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>（2）Redisson可实现可重入锁</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisSonTest</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    RedissonClient  redissonClient;<span class="comment">//实现分布式锁的</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    RedisUtil  redisUtil;<span class="comment">//获得redis的链接</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping</span>(value = <span class="string">"/redissontest"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String  <span class="title">RedisSonTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Jedis jedis = redisUtil.getJedis();</span><br><span class="line">        RLock redisSonLock = redissonClient.getLock(<span class="string">"redisSonLock"</span>);</span><br><span class="line">        <span class="comment">//加锁</span></span><br><span class="line">        redisSonLock.lock(<span class="number">10</span>, TimeUnit.MINUTES);<span class="comment">//有效期十分钟</span></span><br><span class="line"></span><br><span class="line">        String k = jedis.get(<span class="string">"k"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span>(k==<span class="keyword">null</span>)&#123;</span><br><span class="line">            k = <span class="string">"1"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">            <span class="keyword">int</span> inum = Integer.parseInt(k);<span class="comment">//获得value的值</span></span><br><span class="line">            jedis.set(<span class="string">"k"</span>, inum+<span class="number">1</span>+<span class="string">""</span>);<span class="comment">//value增加1</span></span><br><span class="line">            jedis.close();</span><br><span class="line"></span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 解锁</span></span><br><span class="line">            redisSonLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> k;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="缓存雪崩："><a href="#缓存雪崩：" class="headerlink" title="缓存雪崩："></a>缓存雪崩：</h2><p><strong>描述：</strong>redis中大量的热点数据<strong>缓存集体失效</strong>。</p>
+<p><strong>问题：</strong>当有大量请求的时候，就会导致这些请求全部发到数据库上，DB瞬时压力过重雪崩。</p>
+<p><strong>解决方案：</strong></p>
+<p>1、设置<strong>随机过期时间</strong>，避免同一时刻缓存大量失效。（当redis数据库崩溃的时候也会导致缓存雪崩）</p>
+<p>2、使用google的<strong>Guava</strong>本地缓存，防止redis崩溃引起的雪崩。（JVM宕机后本地缓存会失效）</p>
+<p>3、<strong>建立分布式集群</strong>： 将redis缓存分块存储到多台redis服务器上（防止单个redis崩溃导致缓存雪崩），这样就会减小缓存集体失效的概率。</p>
+<p>4、设置热点数据<strong>永远不过期</strong>。</p>
 
         </div>
         <!-- .entry-content -->
@@ -449,15 +437,15 @@
           
             <div class="post-nepre half previous">
           
-            <a href="/2020/06/22/Method queryTotal execution error of sql：SELECT COUNT(1)...%0D/" rel="prev">
+            <a href="/2020/07/08/Java常用工具类/" rel="prev">
               <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/dbquery.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/dbquery.jpg">
+                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/Java工具类.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/Java工具类.jpg">
               </div>
               <span class="label">
               Previous Post</span>
               <div class="info">
                 <h3>
-                Mysql查询语句错误</h3>
+                java开发过程中常用的工具类</h3>
                 <hr>
               </div>
             </a>
@@ -467,15 +455,15 @@
           
             <div class="post-nepre half next">
           
-            <a href="/2020/02/28/百度富文本UEditor在vue中的整合/" rel="next">
+            <a href="/2020/06/22/Method queryTotal execution error of sql：SELECT COUNT(1)...%0D/" rel="next">
               <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/bd-UEditor.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/bd-UEditor.jpg">
+                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/dbquery.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/dbquery.jpg">
               </div>
               <span class="label">
               Next Post</span>
               <div class="info">
                 <h3>
-                百度富文本-Vue UEditor整合</h3>
+                Mysql查询语句错误</h3>
                 <hr>
               </div>
             </a>
