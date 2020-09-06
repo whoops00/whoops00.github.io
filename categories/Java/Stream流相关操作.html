@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">二叉树、平衡二叉树、红黑树、B树、B+树 | 天网空间</title>
+  <title itemprop="name">Stream流相关操作 | 天网空间</title>
   
     <link rel="shortcut icon" href="/images/xin.ico">
   
@@ -339,135 +339,107 @@
   </div>
 </header>
 
-      <link rel="stylesheet" type="text/css" href="/css/sharejs.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
-<div class="pattern-center-blank"></div>
-
-  <div class="pattern-center single-center">
-    <!-- 有配图默认渲染第一张 -->
-    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/tree.jpg);" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/tree.jpg">
+        <div class="pattern-center-blank"></div>
+  
+    <div class="pattern-center ">
+      <div class="pattern-attachment-img">
+        <img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/Stream流.jpg" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+      </div>
+      <header class="pattern-header ">
+        <h1 class="entry-title">
+        Java</h1>
+      </header>
     </div>
-    <header class="pattern-header single-header">
-      <h1 class="entry-title">
-      二叉树、平衡二叉树、红黑树、B树、B+树</h1>
-      <p class="entry-census">
-        <span>
-          <a href="">
-            <img src="">
-          </a>
-        </span>
-        <span>
-          <a href=""></a>
-        </span>
-        <span class="bull">
-        ·</span>
-        2019-12-20<span class="bull">
-        ·</span>
-      <span id="busuanzi_value_page_pv"></span>次阅读</p>
-    </header>
-  </div>
-
-<div id="content" class="site-content">
-  <div id="primary" class="content-area">
-    <main id="main" class="site-main" role="main">
-      <article id="post-1" class="post-1 post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
-        <div class="toc"></div>
-        <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
-        
-        <div class="entry-content">
-          <p>​        数据库中的数据一般是放在磁盘里面，存取数据的时候就要访问磁盘，物理访问过程：<strong>盘片旋转，磁臂移动</strong> 两个过程。盘片旋转到指定位置之后，移动磁臂开始进行数据的存取。如果使用<strong>顺序查找</strong>，查询数据的时候就要从头到尾查询一遍，如果所查询的数据靠近数据尾端，效率久会很低，当然，这种方式也是最低效率的。因此，出现了<strong>二叉树</strong>。</p>
-<a id="more"></a>
-
-<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><p>二叉树是一种非常重要的数据结构，它同时具有数组和链表各自的特点：它可以像数组一样快速查找，也可以像链表一样快速添加。但是它也有自己的缺点：删除操作复杂。</p>
-<h4 id="二叉树在插入数据时也存在一个很大的缺点："><a href="#二叉树在插入数据时也存在一个很大的缺点：" class="headerlink" title="二叉树在插入数据时也存在一个很大的缺点："></a>二叉树在插入数据时也存在一个很大的缺点：</h4><blockquote>
-<p>在使用二叉树插入节点时：一个节点的左节点的关键值必须小于此节点，右节点必须大于或者等于此节点。</p>
-</blockquote>
-<p>通过上面定义可以发现：如果插入的数据是有序的，二叉树就会形成一个分支的树结构，远远增加了树的深度。因而为了提高效率稳定性，形成了<strong>平衡二叉树</strong>：</p>
-<h2 id="平衡二叉树："><a href="#平衡二叉树：" class="headerlink" title="平衡二叉树："></a>平衡二叉树：</h2><h4 id="平衡二叉树用平衡因子差值来判断是否平衡，并旋转二叉树。平衡因子：左右子树高度差。平衡二叉树里平衡因子不能超过1，否则旋转。"><a href="#平衡二叉树用平衡因子差值来判断是否平衡，并旋转二叉树。平衡因子：左右子树高度差。平衡二叉树里平衡因子不能超过1，否则旋转。" class="headerlink" title="平衡二叉树用平衡因子差值来判断是否平衡，并旋转二叉树。平衡因子：左右子树高度差。平衡二叉树里平衡因子不能超过1，否则旋转。"></a>平衡二叉树用平衡因子差值来判断是否平衡，并旋转二叉树。平衡因子：左右子树高度差。平衡二叉树里平衡因子不能超过1，否则旋转。</h4><h5 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h5><p>平衡二叉树虽然达到了稳定，但是由于不停的旋转，时间方面浪费了很多，从而效率又降了下来。</p>
-<p><strong>那么怎样才能稳定的同时，旋转的次数少？</strong>         再次升级–&gt;<strong>红黑树</strong></p>
-<h2 id="红黑树："><a href="#红黑树：" class="headerlink" title="红黑树："></a>红黑树：</h2><p>定义：</p>
+  
+  <div id="content" class="site-content">
+    <article class="post-item post-301 page type-page status-publish has-post-thumbnail hentry">
+      <h1 id="Stream流相关操作"><a href="#Stream流相关操作" class="headerlink" title="Stream流相关操作"></a>Stream流相关操作</h1><h2 id="Stream流"><a href="#Stream流" class="headerlink" title="Stream流"></a>Stream流</h2><h4 id="一、Stream的中间操作"><a href="#一、Stream的中间操作" class="headerlink" title="一、Stream的中间操作"></a>一、Stream的中间操作</h4><ul>
+<li><p><strong>distinct()</strong>：去重<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User.Stream().distinct()</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>filter</strong>：过滤<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">students.stream().filter(student -&gt; <span class="string">"清华大学"</span>.equals(student.getSchool())).collect(Collectors.toList());</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>limit</strong>：limit操作也类似于SQL语句中的<code>LIMIT</code>关键字，不过相对功能较弱，limit返回包含前n个元素的流，当集合大小小于n时，则返回实际长度。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">students.stream().filter(student -&gt; <span class="string">"计算机"</span>.equals(student.getMajor())).limit(<span class="number">2</span>).collect(Collectors.toList());</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>.sorted()</strong> ：排序<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 状态排序</span></span><br><span class="line">orderListDTOS.stream().sorted(Comparator.comparing(OrderListDTO::getOrderStatusStr)</span><br><span class="line">          <span class="comment">// 评价时间 为null靠前</span></span><br><span class="line">          .thenComparing(OrderListDTO::getEvaluateTime, Comparator.nullsFirst(String::compareTo).reversed())</span><br><span class="line">          <span class="comment">// 下单时间 倒序</span></span><br><span class="line">          .thenComparing(OrderListDTO::getOrderTime, Comparator.nullsFirst(String::compareTo)).reversed())</span><br><span class="line">          <span class="comment">// 赋值给新集合 进行保存</span></span><br><span class="line">          .collect(Collectors.toList()).forEach(order -&gt; &#123;</span><br><span class="line">			OrderListDTO orderListDTO = <span class="keyword">new</span> OrderListDTO();</span><br><span class="line">			BeanUtils.copyProperties(order, orderListDTO);</span><br><span class="line">			orders.add(orderListDTO);</span><br><span class="line">		&#125;);</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>skip</strong>：是跳过前n个元素<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">students.stream().filter(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor())).skip(<span class="number">2</span>)</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>of</strong>：实现判断<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">String status = pouch.getStatus();</span><br><span class="line"><span class="keyword">if</span> (Stream.of(</span><br><span class="line">        <span class="string">"Finalized"</span>,</span><br><span class="line">        <span class="string">"Ready"</span>,</span><br><span class="line">        <span class="string">"Checkout"</span>,</span><br><span class="line">        <span class="string">"Confirmed"</span>,</span><br><span class="line">        <span class="string">"Book"</span>,</span><br><span class="line">        <span class="string">"Started"</span>,</span><br><span class="line">        <span class="string">"Inital"</span>,</span><br><span class="line">        <span class="string">"Close"</span>)</span><br><span class="line">        .anyMatch(status::equals)) &#123;<span class="comment">// anyMatch：检测是否存在一个或多个满足指定的参数行为</span></span><br><span class="line">    <span class="comment">// 逻辑代码块</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</li>
+</ul>
+<h4 id="二、终端操作："><a href="#二、终端操作：" class="headerlink" title="二、终端操作："></a>二、终端操作：</h4><p><strong>2.1  查找：</strong></p>
+<ul>
+<li><p><strong>allMatch</strong>：allMatch用于<strong>检测是否全部都满足指定的参数行为</strong>，如果全部满足则返回true，如下：学生年龄是否大于等于18。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> isAdult = students.stream().allMatch(student -&gt; student.getAge() &gt;= <span class="number">18</span>);</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>anyMatch</strong>：anyMatch则是<strong>检测是否存在一个或多个满足指定的参数行为</strong>，如果满足则返回true，如下：所有学生中是否有清华大学的学生。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> hasWhu = students.stream().anyMatch(student -&gt; <span class="string">"清华大学"</span>.equals(student.getSchool()));</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>noneMathch</strong>：noneMatch用于<strong>检测是否不存在满足指定行为的元素</strong>，如果不存在则返回true，如下：检测是否不存在专业为计算机科学的学生。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> noneCs = students.stream().noneMatch(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor()));</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>findFirst</strong>：<strong>用于返回满足条件的第一个元素</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">students.stream().filter(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor())).findFirst();</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>findAny</strong>：<strong>相对于findFirst的区别在于，findAny不一定返回第一个，而是返回任意一个</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">students.stream().filter(student -&gt; <span class="string">"计算机"</span>.equals(student.getMajor())).findAny();</span><br></pre></td></tr></table></figure></p>
+</li>
+</ul>
 <blockquote>
-<p>1、每个节点要么是红色，要么是黑色。</p>
-<p>2、根节点必须是黑色。</p>
-<p>3、红色节点不能连续（也即是，红色节点的孩子和父亲都不能是红色）。</p>
-<p>4、对于每个节点，从该点至null（树尾端）的任何路径，都含有相同个数的黑色节点。</p>
+<p>实际上对于顺序流式处理而言，findFirst和findAny返回的结果是一样的，至于为什么会这样设计，是因为在下一篇我们介绍的<strong>并行流式处理</strong>，当我们启用并行流式处理的时候，查找第一个元素往往会有很多限制，如果不是特别需求，在<strong>并行流式处理中使用findAny的性能要比findFirst好</strong>。</p>
 </blockquote>
-<p><strong>红黑树旋转的关键逻辑是</strong>：确保任何一个节点的左右子树的高度差不会超过二者中较低那个的一倍。例如：节点A，左子树高度X，右子树高度Y， X-Y&lt;=min(X,Y);如果当 X-Y &gt; min(X,Y)，然后开始旋转。</p>
-<p><em>在java中<strong>TreeSet</strong>的数据结构底层就是用的红黑树</em></p>
-<p>红黑树虽然解决了<strong>稳定</strong>、<strong>时间浪费</strong>的问题，但是，我们一开始就说了，数据库中的数据一般是存在磁盘上的，如果考虑到磁盘IO的影响，当数据量过大，就有可能不能一次性读取到内存中；反复的从磁盘到内存，效率就又会降低！</p>
-<p><strong>读取磁盘次数过多，读取浪费就太多，这也是MySql不使用红黑树作为索引的原因</strong></p>
-<h2 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h2><p><strong>多路存储能力</strong></p>
-<p>考虑到磁盘IO,内存的影响，所以产生了<strong>B树</strong>。<strong>B树</strong>：每个节点上都存有key和value，所以每次读取数据时，只需把相应的节点读取到内存中即可，而不需把整个树都读取到内存。等价于有关键字的二分查找，所以<strong>B树</strong>解决了红黑树存在的问题。</p>
-<h4 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h4><p><strong>B树</strong>虽然解决了磁盘读取到内存效率降低的问题，但是由于<strong>B树</strong>的每一个节点上都存有数据，那么就会造成空间浪费，范围查找还是没有解决。那应该怎么解决呢?再次升级–&gt;<strong>B+树</strong>！</p>
-<h2 id="B-树："><a href="#B-树：" class="headerlink" title="B+树："></a>B+树：</h2><p><strong>B+树</strong>中所有的数据都存在叶子节点中，并且叶子节点中还加了指针形成了链表，其他的都是索引，增加了系统的稳定性以及遍历以及查找效率。</p>
-<p><em>MySql索引采用B+树</em>        为什么MySql中索引采用B+树？</p>
-<p>通过应用场景，我们可以知道。再通过MySql查询数据时，我们通常查询的不只是一条数据，大多数情况下都是多条数据。如果采用B树，查询多条时，可能需要跨层获取数据，所以，B+树中叶子节点之间增加了指针形成了<strong>链表结构</strong>，查询多条数据时更加的快速，因此MySql中索引采用了B+树，提高了效率！</p>
-<p><strong>hash比B+树更快，为什么MySql没有采用hash?</strong></p>
-<p>如果查询一条数据的话，hash确实比B+树快。但是正如我们上面所说，我们查询数据时通常是多条的，这时候由于B+树索引有序并且还有链表相连，而且数据库中的索引一般在磁盘，数据量大的时候，B+树可以允许数据分批，同时树的高度比较低，也提高了查询效率，所以多数据时B+树会更快。</p>
+<p><strong>2.2  归约：</strong></p>
+<blockquote>
+<p>我们大部分都是通过<strong><code>collect(Collectors.toList())</code>对数据封装返回</strong>，如我的目标不是返回一个新的集合，而是希望对经过参数化操作后的集合进行进一步的运算，那么我们可用对<strong>集合实施归约</strong>操作。java8的流式处理提供了<strong><code>reduce</code></strong>方法来达到这一目的。</p>
+</blockquote>
+<p>前面我们通过mapToInt将<code>Stream&lt;Student&gt;</code>映射成为<code>IntStream</code>，并通过<code>IntStream</code>的sum方法求得所有学生的年龄之和，实际上我们通过归约操作，也可以达到这一目的，实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 前面例子中的方法</span></span><br><span class="line"><span class="keyword">int</span> totalAge = students.stream()</span><br><span class="line">                .filter(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor()))</span><br><span class="line">                .mapToInt(Student::getAge).sum();</span><br><span class="line"><span class="comment">// 归约操作</span></span><br><span class="line"><span class="keyword">int</span> totalAge = students.stream()</span><br><span class="line">                .filter(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor()))</span><br><span class="line">                .map(Student::getAge)</span><br><span class="line">                .reduce(<span class="number">0</span>, (a, b) -&gt; a + b);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 进一步简化</span></span><br><span class="line"><span class="keyword">int</span> totalAge2 = students.stream()</span><br><span class="line">                .filter(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor()))</span><br><span class="line">                .map(Student::getAge)</span><br><span class="line">                .reduce(<span class="number">0</span>, Integer::sum);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 采用无初始值的重载版本，需要注意返回Optional</span></span><br><span class="line">Optional&lt;Integer&gt; totalAge = students.stream()</span><br><span class="line">                .filter(student -&gt; <span class="string">"计算机科学"</span>.equals(student.getMajor()))</span><br><span class="line">                .map(Student::getAge)</span><br><span class="line">                .reduce(Integer::sum);  <span class="comment">// 去掉初始值</span></span><br></pre></td></tr></table></figure>
 
-        </div>
-        <!-- .entry-content -->
-        <div class="single-reward">
-          <div class="reward-open">赏
-            <div class="reward-main">
-              <ul class="reward-row">
-                <li class="alipay-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/AliPayQR.jpg"></li>
-                <li class="wechat-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/WeChanSQ.jpg"></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
-        <footer class="post-footer">
-          <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
-          <div class="post-tags">
-          </div>
-          <div class="post-share">
-            <div class="social-share sharehidden share-component"></div>
-            <i class="iconfont show-share icon-forward"></i>
-          </div>
-        </footer><!-- .entry-footer -->
-      </article>
-      <!-- #post-## -->
-      <div class="toc" style="background: none;"></div>
-      <section class="post-squares nextprev">
-        
-          
-            <div class="post-nepre half previous">
-          
-            <a href="/2020/02/18/微信小程序-订阅消息/" rel="prev">
-              <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/wx-push.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/wx-push.jpg">
-              </div>
-              <span class="label">
-              Previous Post</span>
-              <div class="info">
-                <h3>
-                微信小程序 订阅消息</h3>
-                <hr>
-              </div>
-            </a>
-          </div>
-        
-        
-          
-            <div class="post-nepre half next">
-          
-            <a href="/2019/11/20/POI千万级导入-导出Excel/" rel="next">
-              <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/POI.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/POI.jpg">
-              </div>
-              <span class="label">
-              Next Post</span>
-              <div class="info">
-                <h3>
-                POI千万级导入-导出(excel)</h3>
-                <hr>
-              </div>
-            </a>
-          </div>
-        
-      </section>
+<p><strong>2.3  收集：</strong></p>
+<p>前面利用<strong><code>collect(Collectors.toList())</code>是一个简单的收集操作，是对处理结果的封装</strong>，对应的还有<strong><code>toSet</code>、<code>toMap</code></strong>，以满足我们对于结果组织的需求。这些方法均来自于<code>java.util.stream.Collectors</code>，我们可以称之为收集器。</p>
+<p><strong>2.3.1  规约：</strong></p>
+<blockquote>
+<p><strong>收集器也提供了相应的归约操作</strong>，但是与reduce在内部实现上是有区别的<strong>，收集器更加适用于可变容器上的归约操作</strong>，这些收集器广义上均基于<strong><code>Collectors.reducing()</code></strong>实现。</p>
+</blockquote>
+<p>(1). 求学生总数：<strong>.count()、Collectors.counting()</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> count = students.stream().collect(Collectors.counting());</span><br><span class="line"><span class="comment">// 进一步简化</span></span><br><span class="line"><span class="keyword">long</span> count = students.stream().count();</span><br></pre></td></tr></table></figure>
+
+<p>(2). 求最大值和最小值：<strong>Collectors.maxBy、Collectors.minBy</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 求最大年龄</span></span><br><span class="line">Optional&lt;Student&gt; olderStudent = students.stream().collect(Collectors.maxBy((s1, s2) -&gt; s1.getAge() - s2.getAge()));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 进一步简化</span></span><br><span class="line">Optional&lt;Student&gt; olderStudent2 = students.stream().collect(Collectors.maxBy(Comparator.comparing(Student::getAge)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 求最小年龄</span></span><br><span class="line">Optional&lt;Student&gt; olderStudent3 = students.stream().collect(Collectors.minBy(Comparator.comparing(Student::getAge)));</span><br></pre></td></tr></table></figure>
+
+<p>(3). 求总和：<strong>Collectors.summingInt</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> totalAge4 = students.stream().collect(Collectors.summingInt(Student::getAge));</span><br><span class="line"><span class="comment">// 对应的还有summingLong、summingDouble。</span></span><br></pre></td></tr></table></figure>
+
+<pre><code>求平均值：**Collectors.averagingInt**</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> avgAge = students.stream().collect(Collectors.averagingInt(Student::getAge));</span><br><span class="line"><span class="comment">// 对应的还有averagingLong、averagingDouble。</span></span><br></pre></td></tr></table></figure>
+
+<pre><code>一次性得到元素个数、总和、均值、最大值、最小值:</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">IntSummaryStatistics statistics = students.stream().collect(Collectors.summarizingInt(Student::getAge));</span><br><span class="line"><span class="comment">// 输出：</span></span><br><span class="line">IntSummaryStatistics&#123;count=<span class="number">10</span>, sum=<span class="number">220</span>, min=<span class="number">20</span>, average=<span class="number">22.000000</span>, max=<span class="number">24</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><em><em>对应的还有<code>summarizingLong</code>、<code>summarizingDouble</code>…</em></em></strong></p>
+<p>(4).  字符串拼接 :   <strong>Collectors.joining(“”)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">String names = students.stream().map(Student::getName).collect(Collectors.joining());</span><br><span class="line"><span class="comment">// 输出：孔明伯约玄德云长翼德元直奉孝仲谋鲁肃丁奉</span></span><br><span class="line">String names = students.stream().map(Student::getName).collect(Collectors.joining(<span class="string">", "</span>));</span><br><span class="line"><span class="comment">// 输出：孔明, 伯约, 玄德, 云长, 翼德, 元直, 奉孝, 仲谋, 鲁肃, 丁奉</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>2.3.2   分组：</strong></p>
+<p>在数据库操作中，我们可以通过<strong><code>GROUP BY</code>关键字对查询到的数据进行分组</strong>，java8的流式处理也为我们提供了这样的功能<strong><code>Collectors.groupingBy</code></strong>来操作集合：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">students.stream().collect(</span><br><span class="line">                Collectors.groupingBy(Student::getSchool,  <span class="comment">// 一级分组，按学校</span></span><br><span class="line">                Collectors.groupingBy(Student::getMajor)));  <span class="comment">// 二级分组，按专业</span></span><br></pre></td></tr></table></figure>
+
+<p>实际上在<code>groupingBy</code>的第二个参数不是只能传递groupingBy，还可以传递任意<code>Collector</code>类型，比如我们可以传递一个<code>Collector.counting</code>，用以统计每个组的个数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, Long&gt; groups = students.stream().collect(Collectors.groupingBy(Student::getSchool, Collectors.counting()));</span><br></pre></td></tr></table></figure>
+
+<p><em>如果我们不添加第二个参数，则编译器会默认帮我们添加一个<code>Collectors.toList()</code>。</em></p>
+<p><strong>2.3.3    分区：</strong></p>
+<p>分区可以看做是分组的一种特殊情况，在分区中key只有两种情况：true或false，目的是<strong>将待分区集合按照条件一分为二</strong>，处理利用<strong>c<code>ollectors.partitioningBy()</code></strong>方法实现分区，该方法接收一个谓词，例如我们希望将学生分为武大学生和非武大学生，那么可以实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;Boolean, List&lt;Student&gt;&gt; partition = students.stream().collect(Collectors.partitioningBy(student -&gt; <span class="string">"武汉大学"</span>.equals(student.getSchool())));</span><br></pre></td></tr></table></figure>
+
+<p><strong>例如：比如将数组分为奇数和偶数。</strong></p>
+<h4 id="三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）"><a href="#三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）" class="headerlink" title="三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）"></a>三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list.parallelStream().map(e -&gt; e + 3).collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>parallelStream</strong>在处理大的数据量的集合时使用，但是线程不安全，可以先<strong>map</strong>，再<strong>.collect(Collectors.toList()</strong>，<strong>.collect(Collectors.toList()</strong>可以封装一个List集合返回，还可以保证线程安全。</p>
+</blockquote>
+<p><strong>——-错误记录：——-</strong></p>
+<p>1、<strong>Collectors.toMap    value为null报错</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, Integer&gt; map3 = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">0</span>);</span><br><span class="line">map3 = list3.stream().collect(Collectors.toMap(</span><br><span class="line">							list3 -&gt; Optional.ofNullable(list3).map(SpGoodsIdAndCount::getGoodsId).orElse(<span class="string">""</span>)</span><br><span class="line">							, list3 -&gt; Optional.ofNullable(list3).map(SpGoodsIdAndCount::getCount).orElse(<span class="number">0</span>)</span><br><span class="line">							, (key1, key2) -&gt; key2));</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>解析：<br>Collectors.toMap(）：list集合转换为map，通过Optional判断当key和value为null时赋予默认值。<br>(key1, key2) -&gt; key2)：当key重复时，选择key2作为新的key值。</p>
+</blockquote>
+
+      <!-- .entry-content -->
       
 <div id="vcomments"></div>
 <script>
@@ -483,25 +455,43 @@
   }
 </script>
 
+      <div class="single-reward">
+        <div class="reward-open">赏
+          <div class="reward-main">
+            <ul class="reward-row">
+              <li class="alipay-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/AliPayQR.jpg"></li>
+              <li class="wechat-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/WeChanSQ.jpg"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
+      <footer class="post-footer">
+        <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 技术共享及个人知识记录，如有错误或侵权，请留言谢谢！</a></div>
+        <div class="post-tags">
+        </div>
+        <div class="post-share">
+          <div class="social-share sharehidden share-component"></div>
+          <i class="iconfont show-share icon-forward"></i>
+        </div>
+      </footer><!-- .entry-footer -->
+    </article>
+      <!-- #post-## -->
       <section class="author-profile">
         <div class="info" itemprop="author" itemscope="" itemtype="https://schema.org/Person">
-          <a href="" class="profile gravatar"><img src="" itemprop="image" alt="" height="70" width="70"></a>
+          <a href="/about/" class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/custom/x.jpg" itemprop="image" alt="KAM" height="70" width="70"></a>
           <div class="meta">
             <span class="title">Author</span>
             <h3 itemprop="name">
-            <a href="" itemprop="url" rel="author"></a>
+            <a href="https://whoops00.github.io" itemprop="url" rel="author">KAM</a>
             </h3>
           </div>
         </div>
         <hr>
-        <p><i class="iconfont icon-write"></i></p>
+        <p><i class="iconfont icon-write"></i>只要我们能梦想的，我们就能实现 ！</p>
       </section>
-    </main><!-- #main -->
   </div><!-- #primary -->
 </div>
-
-
-
     </div>    
     <div class="ins-search">
     <div class="ins-search-mask"></div>

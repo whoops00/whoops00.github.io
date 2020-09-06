@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">二叉树、平衡二叉树、红黑树、B树、B+树 | 天网空间</title>
+  <title itemprop="name">java开发过程中常用的工具类 | 天网空间</title>
   
     <link rel="shortcut icon" href="/images/xin.ico">
   
@@ -339,135 +339,26 @@
   </div>
 </header>
 
-      <link rel="stylesheet" type="text/css" href="/css/sharejs.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
-<div class="pattern-center-blank"></div>
-
-  <div class="pattern-center single-center">
-    <!-- 有配图默认渲染第一张 -->
-    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/tree.jpg);" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/tree.jpg">
+        <div class="pattern-center-blank"></div>
+  
+    <div class="pattern-center ">
+      <div class="pattern-attachment-img">
+        <img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/Java工具类.jpg" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+      </div>
+      <header class="pattern-header ">
+        <h1 class="entry-title">
+        Java工具类</h1>
+      </header>
     </div>
-    <header class="pattern-header single-header">
-      <h1 class="entry-title">
-      二叉树、平衡二叉树、红黑树、B树、B+树</h1>
-      <p class="entry-census">
-        <span>
-          <a href="">
-            <img src="">
-          </a>
-        </span>
-        <span>
-          <a href=""></a>
-        </span>
-        <span class="bull">
-        ·</span>
-        2019-12-20<span class="bull">
-        ·</span>
-      <span id="busuanzi_value_page_pv"></span>次阅读</p>
-    </header>
-  </div>
-
-<div id="content" class="site-content">
-  <div id="primary" class="content-area">
-    <main id="main" class="site-main" role="main">
-      <article id="post-1" class="post-1 post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
-        <div class="toc"></div>
-        <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
-        
-        <div class="entry-content">
-          <p>​        数据库中的数据一般是放在磁盘里面，存取数据的时候就要访问磁盘，物理访问过程：<strong>盘片旋转，磁臂移动</strong> 两个过程。盘片旋转到指定位置之后，移动磁臂开始进行数据的存取。如果使用<strong>顺序查找</strong>，查询数据的时候就要从头到尾查询一遍，如果所查询的数据靠近数据尾端，效率久会很低，当然，这种方式也是最低效率的。因此，出现了<strong>二叉树</strong>。</p>
-<a id="more"></a>
-
-<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><p>二叉树是一种非常重要的数据结构，它同时具有数组和链表各自的特点：它可以像数组一样快速查找，也可以像链表一样快速添加。但是它也有自己的缺点：删除操作复杂。</p>
-<h4 id="二叉树在插入数据时也存在一个很大的缺点："><a href="#二叉树在插入数据时也存在一个很大的缺点：" class="headerlink" title="二叉树在插入数据时也存在一个很大的缺点："></a>二叉树在插入数据时也存在一个很大的缺点：</h4><blockquote>
-<p>在使用二叉树插入节点时：一个节点的左节点的关键值必须小于此节点，右节点必须大于或者等于此节点。</p>
+  
+  <div id="content" class="site-content">
+    <article class="post-item post-301 page type-page status-publish has-post-thumbnail hentry">
+      <h1 id="工具类："><a href="#工具类：" class="headerlink" title="工具类："></a>工具类：</h1><blockquote>
+<p>java开发过程中常用的工具类，可以省去很多的无用功。<br>如：MD5加密、String相关操作/判null，“”、集合操作等等…<br>请前往一下网站查看，这里不做赘述。</p>
 </blockquote>
-<p>通过上面定义可以发现：如果插入的数据是有序的，二叉树就会形成一个分支的树结构，远远增加了树的深度。因而为了提高效率稳定性，形成了<strong>平衡二叉树</strong>：</p>
-<h2 id="平衡二叉树："><a href="#平衡二叉树：" class="headerlink" title="平衡二叉树："></a>平衡二叉树：</h2><h4 id="平衡二叉树用平衡因子差值来判断是否平衡，并旋转二叉树。平衡因子：左右子树高度差。平衡二叉树里平衡因子不能超过1，否则旋转。"><a href="#平衡二叉树用平衡因子差值来判断是否平衡，并旋转二叉树。平衡因子：左右子树高度差。平衡二叉树里平衡因子不能超过1，否则旋转。" class="headerlink" title="平衡二叉树用平衡因子差值来判断是否平衡，并旋转二叉树。平衡因子：左右子树高度差。平衡二叉树里平衡因子不能超过1，否则旋转。"></a>平衡二叉树用平衡因子差值来判断是否平衡，并旋转二叉树。平衡因子：左右子树高度差。平衡二叉树里平衡因子不能超过1，否则旋转。</h4><h5 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h5><p>平衡二叉树虽然达到了稳定，但是由于不停的旋转，时间方面浪费了很多，从而效率又降了下来。</p>
-<p><strong>那么怎样才能稳定的同时，旋转的次数少？</strong>         再次升级–&gt;<strong>红黑树</strong></p>
-<h2 id="红黑树："><a href="#红黑树：" class="headerlink" title="红黑树："></a>红黑树：</h2><p>定义：</p>
-<blockquote>
-<p>1、每个节点要么是红色，要么是黑色。</p>
-<p>2、根节点必须是黑色。</p>
-<p>3、红色节点不能连续（也即是，红色节点的孩子和父亲都不能是红色）。</p>
-<p>4、对于每个节点，从该点至null（树尾端）的任何路径，都含有相同个数的黑色节点。</p>
-</blockquote>
-<p><strong>红黑树旋转的关键逻辑是</strong>：确保任何一个节点的左右子树的高度差不会超过二者中较低那个的一倍。例如：节点A，左子树高度X，右子树高度Y， X-Y&lt;=min(X,Y);如果当 X-Y &gt; min(X,Y)，然后开始旋转。</p>
-<p><em>在java中<strong>TreeSet</strong>的数据结构底层就是用的红黑树</em></p>
-<p>红黑树虽然解决了<strong>稳定</strong>、<strong>时间浪费</strong>的问题，但是，我们一开始就说了，数据库中的数据一般是存在磁盘上的，如果考虑到磁盘IO的影响，当数据量过大，就有可能不能一次性读取到内存中；反复的从磁盘到内存，效率就又会降低！</p>
-<p><strong>读取磁盘次数过多，读取浪费就太多，这也是MySql不使用红黑树作为索引的原因</strong></p>
-<h2 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h2><p><strong>多路存储能力</strong></p>
-<p>考虑到磁盘IO,内存的影响，所以产生了<strong>B树</strong>。<strong>B树</strong>：每个节点上都存有key和value，所以每次读取数据时，只需把相应的节点读取到内存中即可，而不需把整个树都读取到内存。等价于有关键字的二分查找，所以<strong>B树</strong>解决了红黑树存在的问题。</p>
-<h4 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h4><p><strong>B树</strong>虽然解决了磁盘读取到内存效率降低的问题，但是由于<strong>B树</strong>的每一个节点上都存有数据，那么就会造成空间浪费，范围查找还是没有解决。那应该怎么解决呢?再次升级–&gt;<strong>B+树</strong>！</p>
-<h2 id="B-树："><a href="#B-树：" class="headerlink" title="B+树："></a>B+树：</h2><p><strong>B+树</strong>中所有的数据都存在叶子节点中，并且叶子节点中还加了指针形成了链表，其他的都是索引，增加了系统的稳定性以及遍历以及查找效率。</p>
-<p><em>MySql索引采用B+树</em>        为什么MySql中索引采用B+树？</p>
-<p>通过应用场景，我们可以知道。再通过MySql查询数据时，我们通常查询的不只是一条数据，大多数情况下都是多条数据。如果采用B树，查询多条时，可能需要跨层获取数据，所以，B+树中叶子节点之间增加了指针形成了<strong>链表结构</strong>，查询多条数据时更加的快速，因此MySql中索引采用了B+树，提高了效率！</p>
-<p><strong>hash比B+树更快，为什么MySql没有采用hash?</strong></p>
-<p>如果查询一条数据的话，hash确实比B+树快。但是正如我们上面所说，我们查询数据时通常是多条的，这时候由于B+树索引有序并且还有链表相连，而且数据库中的索引一般在磁盘，数据量大的时候，B+树可以允许数据分批，同时树的高度比较低，也提高了查询效率，所以多数据时B+树会更快。</p>
+<p><strong>官网地址：<a href="http://www.hutool.cn/" target="_blank" rel="noopener">http://www.hutool.cn/</a></strong></p>
 
-        </div>
-        <!-- .entry-content -->
-        <div class="single-reward">
-          <div class="reward-open">赏
-            <div class="reward-main">
-              <ul class="reward-row">
-                <li class="alipay-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/AliPayQR.jpg"></li>
-                <li class="wechat-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/WeChanSQ.jpg"></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
-        <footer class="post-footer">
-          <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
-          <div class="post-tags">
-          </div>
-          <div class="post-share">
-            <div class="social-share sharehidden share-component"></div>
-            <i class="iconfont show-share icon-forward"></i>
-          </div>
-        </footer><!-- .entry-footer -->
-      </article>
-      <!-- #post-## -->
-      <div class="toc" style="background: none;"></div>
-      <section class="post-squares nextprev">
-        
-          
-            <div class="post-nepre half previous">
-          
-            <a href="/2020/02/18/微信小程序-订阅消息/" rel="prev">
-              <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/wx-push.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/wx-push.jpg">
-              </div>
-              <span class="label">
-              Previous Post</span>
-              <div class="info">
-                <h3>
-                微信小程序 订阅消息</h3>
-                <hr>
-              </div>
-            </a>
-          </div>
-        
-        
-          
-            <div class="post-nepre half next">
-          
-            <a href="/2019/11/20/POI千万级导入-导出Excel/" rel="next">
-              <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/POI.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/POI.jpg">
-              </div>
-              <span class="label">
-              Next Post</span>
-              <div class="info">
-                <h3>
-                POI千万级导入-导出(excel)</h3>
-                <hr>
-              </div>
-            </a>
-          </div>
-        
-      </section>
+      <!-- .entry-content -->
       
 <div id="vcomments"></div>
 <script>
@@ -483,25 +374,43 @@
   }
 </script>
 
+      <div class="single-reward">
+        <div class="reward-open">赏
+          <div class="reward-main">
+            <ul class="reward-row">
+              <li class="alipay-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/AliPayQR.jpg"></li>
+              <li class="wechat-code"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/donate/WeChanSQ.jpg"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
+      <footer class="post-footer">
+        <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 技术共享及个人知识记录，如有错误或侵权，请留言谢谢！</a></div>
+        <div class="post-tags">
+        </div>
+        <div class="post-share">
+          <div class="social-share sharehidden share-component"></div>
+          <i class="iconfont show-share icon-forward"></i>
+        </div>
+      </footer><!-- .entry-footer -->
+    </article>
+      <!-- #post-## -->
       <section class="author-profile">
         <div class="info" itemprop="author" itemscope="" itemtype="https://schema.org/Person">
-          <a href="" class="profile gravatar"><img src="" itemprop="image" alt="" height="70" width="70"></a>
+          <a href="/about/" class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/custom/x.jpg" itemprop="image" alt="KAM" height="70" width="70"></a>
           <div class="meta">
             <span class="title">Author</span>
             <h3 itemprop="name">
-            <a href="" itemprop="url" rel="author"></a>
+            <a href="https://whoops00.github.io" itemprop="url" rel="author">KAM</a>
             </h3>
           </div>
         </div>
         <hr>
-        <p><i class="iconfont icon-write"></i></p>
+        <p><i class="iconfont icon-write"></i>只要我们能梦想的，我们就能实现 ！</p>
       </section>
-    </main><!-- #main -->
   </div><!-- #primary -->
 </div>
-
-
-
     </div>    
     <div class="ins-search">
     <div class="ins-search-mask"></div>
