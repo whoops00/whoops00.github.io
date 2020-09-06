@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">Mysql查询语句错误 | 天网空间</title>
+  <title itemprop="name">技术栈 | 天网空间</title>
   
     <link rel="shortcut icon" href="/images/xin.ico">
   
@@ -225,7 +225,7 @@
                       </li>
                     
                       <li>
-                        <a href="/categories/数据库/">
+                        <a href="/categories/DB/">
                           <i class="fa fa-database" aria-hidden="true"></i>
                           DB
                         </a>
@@ -343,54 +343,21 @@
   
     <div class="pattern-center ">
       <div class="pattern-attachment-img">
-        <img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/dbquery.jpg" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+        <img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/cover/(6).jpg.webp" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
       </div>
       <header class="pattern-header ">
         <h1 class="entry-title">
-        Mysql</h1>
+        技术栈</h1>
       </header>
     </div>
   
   <div id="content" class="site-content">
     <article class="post-item post-301 page type-page status-publish has-post-thumbnail hentry">
-      <h1 id="Method-queryTotal-execution-error-of-sql：SELECT-COUNT-1-…"><a href="#Method-queryTotal-execution-error-of-sql：SELECT-COUNT-1-…" class="headerlink" title="Method queryTotal execution error of sql：SELECT COUNT(1)…"></a>Method queryTotal execution error of sql：SELECT COUNT(1)…</h1><p><strong>场景：</strong>（查询语句）查询**详细信息。</p>
-<p><strong>问题分析及解决方案：</strong></p>
-<p>-<br><strong>分析</strong>：查询执行时，将我们的目标查询语句（SELECT id,name…）执行成了SELECT COUNT(1)…。</p>
-<p>这种问题一般是自己书写的<strong>SQL语句</strong>有问题，所以我们要首先<strong>定位到自己的SQL语句并仔细检查</strong></p>
-<p>-<br><strong>解决排查</strong>：一般SQL的错误点：</p>
-<blockquote>
-<p>1、实体类中有code1字段表中没有（反之）。</p>
-</blockquote>
-<blockquote>
-<p>2、查询字段名称与实体类或表中字段不对应。</p>
-</blockquote>
-<blockquote>
-<p>3、查询的数据库及表不正确。（查错库和表）</p>
-</blockquote>
-<blockquote>
-<p>4、SQL语句中的判空、判null、length&gt;0等操作是否严谨。</p>
-</blockquote>
-<blockquote>
-<p>5、SQL语句是否书写有误等问题。</p>
-</blockquote>
-<p><strong>总结：</strong> <strong>一般这种情况，都是SQL语句有错误，导致Mybaits查询不到相应的内容，从而执行了SELECT COUNT(1)…，所以务必要仔细检查SQL查询语句。</strong></p>
+      
+
 
       <!-- .entry-content -->
       
-<div id="vcomments"></div>
-<script>
-  window.onload = function(){
-      var valine = new Valine();
-      valine.init({
-        el: '#vcomments',
-        appId: "QmAWIjAcAhD7BRjzX36jwIgh-gzGzoHsz",
-        appKey: "zb079LewvVCeJVyVH2t4MVDq",
-        path: window.location.pathname,
-        placeholder: "你是我一生只会遇见一次的惊喜 ..."
-      })
-  }
-</script>
-
       <div class="single-reward">
         <div class="reward-open">赏
           <div class="reward-main">
@@ -433,7 +400,7 @@
     <div class="ins-search-mask"></div>
     <div class="ins-search-container">
         <div class="ins-input-wrapper">
-            <input type="text" class="ins-search-input" placeholder="Type something..."/>
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
             <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="ins-section-wrapper">
@@ -445,10 +412,10 @@
 (function (window) {
     var INSIGHT_CONFIG = {
         TRANSLATION: {
-            POSTS: 'Posts',
-            // PAGES: 'Pages',
-            CATEGORIES: 'Categories',
-            TAGS: 'Tags',
+            POSTS: '文章',
+            // PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
         },
         ROOT_URL: '/',
         CONTENT_URL: '/content.json',
@@ -611,7 +578,7 @@ $(document).ready(function() {
               </li>
             
               <li>
-                <a href="/categories/数据库/">
+                <a href="/categories/DB/">
                   <i class="fa fa-database" aria-hidden="true"></i>
                   DB
                 </a>
