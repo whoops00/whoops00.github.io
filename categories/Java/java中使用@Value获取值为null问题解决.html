@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.9.0">
+<head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
@@ -59,8 +59,8 @@
   </style>
   <style type="text/css">.site-top .lower nav{display:block !important;}.author-profile i,.post-like a,.post-share .show-share,.sub-text,.we-info a,span.sitename,.post-more i:hover,#pagination a:hover,.post-content a:hover,.float-content i:hover{color:#FE9600}.feature i,.download,.navigator i:hover,.links ul li:before,.ar-time i,span.ar-circle,.object,.comment .comment-reply-link,.siren-checkbox-radio:checked + .siren-checkbox-radioInput:after{background:#FE9600}::-webkit-scrollbar-thumb{background:#FE9600}.download,.navigator i:hover,.link-title,.links ul li:hover,#pagination a:hover,.comment-respond input[type='submit']:hover{border-color:#FE9600}.entry-content a:hover,.site-info a:hover,.comment h4 a,#comments-navi a.prev,#comments-navi a.next,.comment h4 a:hover,.site-top ul li a:hover,.entry-title a:hover,#archives-temp h3,span.page-numbers.current,.sorry li a:hover,.site-title a:hover,i.iconfont.js-toggle-search.iconsearch:hover,.comment-respond input[type='submit']:hover{color:#FE9600}.comments .comments-main{display:block !important;}.comments .comments-hidden{display:none !important;}background-position:center center;background-attachment:inherit;}
   </style>
-</head>
-</html>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
 <script src="https://cdn.jsdelivr.net/gh/wallleap/cdn/js/canvas-nest.min.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css"> <!-- 这条在sakura中已有，可不添加 --><script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>
 <body class="page-template page-template-user page-template-page-analytics page-template-userpage-analytics-php page page-id-1297 chinese-font serif isWebKit">
   <div class="scrollbar" id="bar">
@@ -73,7 +73,7 @@
   <figure id="centerbg" class="centerbg">
     <div class="focusinfo no-select">
       <div class="header-tou">
-        <a href="https://whoops00.github.io">
+        <a target="_blank" rel="noopener" href="https://whoops00.github.io">
           <img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/custom/x.jpg">
         </a>
       </div>
@@ -219,7 +219,7 @@
                       </li>
                     
                       <li>
-                        <a href="/categories/前端/">
+                        <a href="/categories/%E5%89%8D%E7%AB%AF/">
                           <i class="fa fa-dumbbell" aria-hidden="true"></i>
                           前端
                         </a>
@@ -233,14 +233,14 @@
                       </li>
                     
                       <li>
-                        <a href="/categories/中间件/">
+                        <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">
                           <i class="fa fa-exchange-alt" aria-hidden="true"></i>
                           中间件
                         </a>
                       </li>
                     
                       <li>
-                        <a href="/categories/其他/">
+                        <a href="/categories/%E5%85%B6%E4%BB%96/">
                           <i class="fa " aria-hidden="true"></i>
                           其他
                         </a>
@@ -275,14 +275,14 @@
                       </li>
                     
                       <li>
-                        <a href="/music/技术书籍/">
+                        <a href="/music/%E6%8A%80%E6%9C%AF%E4%B9%A6%E7%B1%8D/">
                           <i class="fa fa-cogs" aria-hidden="true"></i>
                           技术
                         </a>
                       </li>
                     
                       <li>
-                        <a href="/tags/其他语言/">
+                        <a href="/tags/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/">
                           <i class="fa fa-feather-alt" aria-hidden="true"></i>
                           其他
                         </a>
@@ -317,7 +317,7 @@
                       </li>
                     
                       <li>
-                        <a href="/tags/图集/">
+                        <a href="/tags/%E5%9B%BE%E9%9B%86/">
                           <i class="fa fa-photo" aria-hidden="true"></i>
                           图集
                         </a>
@@ -390,7 +390,7 @@
   <div id="content" class="site-content">
     <article class="post-item post-301 page type-page status-publish has-post-thumbnail hentry">
       <h1 id="java中使用-Value获取值为null问题解决："><a href="#java中使用-Value获取值为null问题解决：" class="headerlink" title="java中使用@Value获取值为null问题解决："></a>java中使用@Value获取值为null问题解决：</h1><p><strong>问题重现：</strong>读取配置文件(**.yml)中的值，获取为null</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 读取配置文件(**.yml)中的值</span></span><br><span class="line"><span class="meta">@Value</span>(value = <span class="string">"$&#123;upload.minio.minio_url&#125;"</span>)</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> String minioUrl;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 读取配置文件(**.yml)中的值</span></span><br><span class="line"><span class="meta">@Value(value = &quot;$&#123;upload.minio.minio_url&#125;&quot;)</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> String minioUrl;</span><br></pre></td></tr></table></figure>
 
 <p><strong>问题解析：</strong></p>
 <blockquote>
@@ -401,10 +401,10 @@
 <p>1.静态变量的setter 方法需要<strong>去掉 static  修饰词</strong>，</p>
 <p>2.并需要使用<strong>public修饰</strong>，</p>
 <p>3.最后需要注意要*<em>在类上加上<a href="/Component">@Component </a> *</em>，才可以成功注入。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value</span>(value = <span class="string">"$&#123;upload.minio.minio_url&#125;"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setMinioUrl</span><span class="params">(String minioUrl)</span> </span>&#123;</span><br><span class="line">	MinioUtil.minioUrl = minioUrl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value(value = &quot;$&#123;upload.minio.minio_url&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setMinioUrl</span><span class="params">(String minioUrl)</span> </span>&#123;</span><br><span class="line">	MinioUtil.minioUrl = minioUrl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><strong>方案二：</strong>通过中间变量赋值：*<em>在类上加上<a href="/Component">@Component </a> *</em></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> String minioUrl;</span><br><span class="line"><span class="meta">@Value</span>(value = <span class="string">"$&#123;upload.minio.minio_url&#125;"</span>)</span><br><span class="line"><span class="keyword">private</span> String minioUrl2;</span><br><span class="line"></span><br><span class="line"><span class="meta">@PostConstruct</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">minioUrl = minioUrl2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> String minioUrl;</span><br><span class="line"><span class="meta">@Value(value = &quot;$&#123;upload.minio.minio_url&#125;&quot;)</span></span><br><span class="line"><span class="keyword">private</span> String minioUrl2;</span><br><span class="line"></span><br><span class="line"><span class="meta">@PostConstruct</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">minioUrl = minioUrl2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><strong>总结：</strong> <strong>解决方案有两种，都是间接的通过非static的变量获取到值，从而拿到.yml中的值；但是，两种方法中都需要在类上加上@Component。</strong></p>
 
@@ -452,7 +452,7 @@
           <div class="meta">
             <span class="title">Author</span>
             <h3 itemprop="name">
-            <a href="https://whoops00.github.io" itemprop="url" rel="author">KAM</a>
+            <a target="_blank" href="https://whoops00.github.io" itemprop="url" rel="author noopener">KAM</a>
             </h3>
           </div>
         </div>
@@ -664,7 +664,7 @@ $(document).ready(function() {
               </li>
             
               <li>
-                <a href="/categories/前端/">
+                <a href="/categories/%E5%89%8D%E7%AB%AF/">
                   <i class="fa fa-dumbbell" aria-hidden="true"></i>
                   前端
                 </a>
@@ -678,14 +678,14 @@ $(document).ready(function() {
               </li>
             
               <li>
-                <a href="/categories/中间件/">
+                <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">
                   <i class="fa fa-exchange-alt" aria-hidden="true"></i>
                   中间件
                 </a>
               </li>
             
               <li>
-                <a href="/categories/其他/">
+                <a href="/categories/%E5%85%B6%E4%BB%96/">
                   <i class="fa " aria-hidden="true"></i>
                   其他
                 </a>
@@ -720,14 +720,14 @@ $(document).ready(function() {
               </li>
             
               <li>
-                <a href="/music/技术书籍/">
+                <a href="/music/%E6%8A%80%E6%9C%AF%E4%B9%A6%E7%B1%8D/">
                   <i class="fa fa-cogs" aria-hidden="true"></i>
                   技术
                 </a>
               </li>
             
               <li>
-                <a href="/tags/其他语言/">
+                <a href="/tags/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/">
                   <i class="fa fa-feather-alt" aria-hidden="true"></i>
                   其他
                 </a>
@@ -762,7 +762,7 @@ $(document).ready(function() {
               </li>
             
               <li>
-                <a href="/tags/图集/">
+                <a href="/tags/%E5%9B%BE%E9%9B%86/">
                   <i class="fa fa-photo" aria-hidden="true"></i>
                   图集
                 </a>
@@ -849,13 +849,15 @@ $(document).ready(function() {
 </style>
 <meting-js
 
-    id="2660651585"
+    id="5223046741"
 
     server="netease"
 
     type="playlist"
 
     fixed="true"
+
+    mini="false"
 
     autoplay="false"
 
