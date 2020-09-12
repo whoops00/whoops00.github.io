@@ -868,10 +868,8 @@ $(document).ready(function() {
   <p style="text-align: center; font-size: 13px; color: #b9b9b9;">&copy 2019 hexo-sakura</p>
 </div>
 <button onclick="topFunction()" class="mobile-cd-top" id="moblieGoTop" title="Go to top" style="display: none;"><i class="fa fa-chevron-up" aria-hidden="true"></i></button>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
-<script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
-<!-- require MetingJS -->
-<script src="https://cdn.jsdelivr.net/npm/meting@3/dist/Meting.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script>
 <style>
   .aplayer .aplayer-lrc {
     height: 35px;
@@ -898,33 +896,34 @@ $(document).ready(function() {
     background: rgba(255, 255, 255, 0.8);
   }
 </style>
-<meting-js
+<div class="aplayer"
 
-    id="2660651585"
+    data-id="2660651585"
 
-    server="netease"
+    data-server="netease"
 
-    type="playlist"
+    data-type="playlist"
 
-    fixed="true"
+    data-fixed="true"
 
-    mini="false"
+    data-mini="false"
 
-    autoplay="true"
+    data-autoplay="true"
 
-    loop="all"
+    data-loop="all"
 
-    order="random"
+    data-order="random"
 
-    preload="auto"
+    data-preload="auto"
 
-    volume="0.7"
+    data-volume="0.7"
 
-    mutex="true"
+    data-mutex="true"
 
-    meting="true"
+    data-meting="true"
 
-</meting-js>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script>
 <script>
   $(function(){
     $('body').on('click', '.aplayer', function(){
