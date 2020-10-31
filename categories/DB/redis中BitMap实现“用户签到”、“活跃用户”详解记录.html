@@ -63,6 +63,25 @@
 <meta name="generator" content="Hexo 5.1.1"></head>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css"> <!-- 这条在sakura中已有，可不添加 --><script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>
+<!--代码雨-->
+
+      <!-- 数字雨 -->
+      <canvas id="code_rain_canvas" width="1440" height="900"></canvas>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/code_rain.js">
+        <style>
+            #code_rain_canvas {
+              position: fixed;
+              right: 0px;
+              bottom: 0px;
+              min-width: 100%;
+              min-height: 100%;
+              height: auto;
+              width: auto;
+              z-index: -1;
+            }
+        </style>
+    </script>
+
 <body class="page-template page-template-user page-template-page-analytics page-template-userpage-analytics-php page page-id-1297 chinese-font serif isWebKit">
   <div class="scrollbar" id="bar">
   </div>
@@ -400,13 +419,62 @@
 <p>4.方便扩容</p>
 <p><strong>限制</strong></p>
 <p>redis中bit映射被限制在512MB之内，所以最大是2^32位。建议每个key的位数都控制下，因为读取时候时间复杂度O(n)，越大的串读的时间花销越多。</p>
-<h3 id="一、用户是否领取过优惠券："><a href="#一、用户是否领取过优惠券：" class="headerlink" title="一、用户是否领取过优惠券："></a>一、用户是否领取过优惠券：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// redis客户端</span></span><br><span class="line">Jedis jedis = <span class="keyword">new</span> Jedis();</span><br><span class="line"><span class="comment">// 1.首先检验用户是否领取过优惠券 id:用户id ; couponId:优惠券id ;1:已领取，0：未领取</span></span><br><span class="line"><span class="keyword">int</span> isGot = jedis.getbit(couponId, id);</span><br><span class="line"><span class="keyword">if</span>(isGot == <span class="number">1</span>)&#123;</span><br><span class="line">    <span class="comment">// 已领取</span></span><br><span class="line">    <span class="keyword">return</span> R.failed(<span class="string">&quot;您已经领取过此优惠券，不能重复领取！&quot;</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="comment">// 未领取</span></span><br><span class="line">    <span class="comment">// 查询优惠券剩余数量</span></span><br><span class="line">    CouponEntity coupon = couponService.selectById(couponId);</span><br><span class="line">    <span class="keyword">if</span>(coupon.getNum() &lt;= <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> R.failed(<span class="string">&quot;您来晚了，优惠券已经领取完了！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    jedis.setbit(couponId, id, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// *如需要往数据库记录领取信息*</span></span><br><span class="line">    <span class="comment">// couponService.insert();</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//减去优惠券剩余数量</span></span><br><span class="line">    couponService.deleteNum(couponId);</span><br><span class="line">    <span class="keyword">return</span> R.ok(<span class="string">&quot;已领取！&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2.统计已领取的优惠券数量 bitcount(key)</span></span><br><span class="line">	Integer count = jedis.bitcount(couponId);</span><br></pre></td></tr></table></figure>
+<h3 id="一、用户是否领取过优惠券："><a href="#一、用户是否领取过优惠券：" class="headerlink" title="一、用户是否领取过优惠券："></a>一、用户是否领取过优惠券：</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// redis客户端</span>
+Jedis jedis <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Jedis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// 1.首先检验用户是否领取过优惠券 id:用户id ; couponId:优惠券id ;1:已领取，0：未领取</span>
+<span class="token keyword">int</span> isGot <span class="token operator">=</span> jedis<span class="token punctuation">.</span><span class="token function">getbit</span><span class="token punctuation">(</span>couponId<span class="token punctuation">,</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span>isGot <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 已领取</span>
+    <span class="token keyword">return</span> R<span class="token punctuation">.</span><span class="token function">failed</span><span class="token punctuation">(</span><span class="token string">"您已经领取过此优惠券，不能重复领取！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token keyword">else</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 未领取</span>
+    <span class="token comment" spellcheck="true">// 查询优惠券剩余数量</span>
+    CouponEntity coupon <span class="token operator">=</span> couponService<span class="token punctuation">.</span><span class="token function">selectById</span><span class="token punctuation">(</span>couponId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>coupon<span class="token punctuation">.</span><span class="token function">getNum</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> R<span class="token punctuation">.</span><span class="token function">failed</span><span class="token punctuation">(</span><span class="token string">"您来晚了，优惠券已经领取完了！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    jedis<span class="token punctuation">.</span><span class="token function">setbit</span><span class="token punctuation">(</span>couponId<span class="token punctuation">,</span> id<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// *如需要往数据库记录领取信息*</span>
+    <span class="token comment" spellcheck="true">// couponService.insert();</span>
 
-<h3 id="二、活跃用户统计"><a href="#二、活跃用户统计" class="headerlink" title="二、活跃用户统计"></a>二、活跃用户统计</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当天登录及视为活跃  使用时间作为cacheKey，然后用户ID为offset，如果当日活跃过就设置为1</span></span><br><span class="line"><span class="comment">// 在登陆处添加  todayDate:当天时间 id：用户id</span></span><br><span class="line"><span class="comment">// 获取当前日期</span></span><br><span class="line">LocalDate now = LocalDate.now();</span><br><span class="line">jedis.setbit(now, id, <span class="number">1</span>);</span><br><span class="line"><span class="comment">// 统计当天活跃用户</span></span><br><span class="line">jedis.bitcount(now);</span><br><span class="line"><span class="comment">// 统计某个时间端活跃用户 date1 date2 or:取或  tem：返回值存在tem中，再bitcount计算结果</span></span><br><span class="line"><span class="comment">// AND：与 、OR：或 、NOT：非 、 XOR：异或</span></span><br><span class="line">jedis.bitop(or, tem, date1, date2);</span><br><span class="line"><span class="keyword">int</span> num = jedis.bitcount(tem);</span><br></pre></td></tr></table></figure>
+    <span class="token comment" spellcheck="true">//减去优惠券剩余数量</span>
+    couponService<span class="token punctuation">.</span><span class="token function">deleteNum</span><span class="token punctuation">(</span>couponId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> R<span class="token punctuation">.</span><span class="token function">ok</span><span class="token punctuation">(</span><span class="token string">"已领取！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
 
+<span class="token comment" spellcheck="true">// 2.统计已领取的优惠券数量 bitcount(key)</span>
+    Integer count <span class="token operator">=</span> jedis<span class="token punctuation">.</span><span class="token function">bitcount</span><span class="token punctuation">(</span>couponId<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h3 id="二、活跃用户统计"><a href="#二、活跃用户统计" class="headerlink" title="二、活跃用户统计"></a>二、活跃用户统计</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 当天登录及视为活跃  使用时间作为cacheKey，然后用户ID为offset，如果当日活跃过就设置为1</span>
+<span class="token comment" spellcheck="true">// 在登陆处添加  todayDate:当天时间 id：用户id</span>
+<span class="token comment" spellcheck="true">// 获取当前日期</span>
+LocalDate now <span class="token operator">=</span> LocalDate<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+jedis<span class="token punctuation">.</span><span class="token function">setbit</span><span class="token punctuation">(</span>now<span class="token punctuation">,</span> id<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// 统计当天活跃用户</span>
+jedis<span class="token punctuation">.</span><span class="token function">bitcount</span><span class="token punctuation">(</span>now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// 统计某个时间端活跃用户 date1 date2 or:取或  tem：返回值存在tem中，再bitcount计算结果</span>
+<span class="token comment" spellcheck="true">// AND：与 、OR：或 、NOT：非 、 XOR：异或</span>
+jedis<span class="token punctuation">.</span><span class="token function">bitop</span><span class="token punctuation">(</span>or<span class="token punctuation">,</span> tem<span class="token punctuation">,</span> date1<span class="token punctuation">,</span> date2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> num <span class="token operator">=</span> jedis<span class="token punctuation">.</span><span class="token function">bitcount</span><span class="token punctuation">(</span>tem<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <p>三、用户签到：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">*譬如 setbit sign:123:1909 0 1</span></span><br><span class="line"><span class="comment">*代表用户ID=123签到，签到的时间是19年9月份，0代表该月第一天，1代表签到了</span></span><br><span class="line"><span class="comment">*第二天没有签到，无需处理，系统默认为0</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">// 获取当前年月日</span></span><br><span class="line">LocalDate now = LocalDate.now();</span><br><span class="line"><span class="keyword">int</span> year = now.getYear();</span><br><span class="line"><span class="keyword">int</span> month = now.getMonthValue();</span><br><span class="line"><span class="keyword">int</span> day = now.getDayOfMonth();</span><br><span class="line">String key = id+year+month;</span><br><span class="line"><span class="comment">// 签到</span></span><br><span class="line"><span class="keyword">int</span> signIn = jedis.getbit(key, day);</span><br><span class="line"><span class="keyword">if</span>(signIn == <span class="number">1</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> R.faild(<span class="string">&quot;您已经签到了，一天只能签到一次！&quot;</span>);<span class="comment">// 实际中可以通过前端点击签到按钮置灰，按钮只能点击一次。</span></span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    jedis.setbit(key, day, <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> R.ok(<span class="string">&quot;签到成功！&quot;</span>);</span><br></pre></td></tr></table></figure>
-
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+*譬如 setbit sign:123:1909 0 1
+*代表用户ID=123签到，签到的时间是19年9月份，0代表该月第一天，1代表签到了
+*第二天没有签到，无需处理，系统默认为0
+*/</span>
+<span class="token comment" spellcheck="true">// 获取当前年月日</span>
+LocalDate now <span class="token operator">=</span> LocalDate<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> year <span class="token operator">=</span> now<span class="token punctuation">.</span><span class="token function">getYear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> month <span class="token operator">=</span> now<span class="token punctuation">.</span><span class="token function">getMonthValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> day <span class="token operator">=</span> now<span class="token punctuation">.</span><span class="token function">getDayOfMonth</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+String key <span class="token operator">=</span> id<span class="token operator">+</span>year<span class="token operator">+</span>month<span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// 签到</span>
+<span class="token keyword">int</span> signIn <span class="token operator">=</span> jedis<span class="token punctuation">.</span><span class="token function">getbit</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> day<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span>signIn <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> R<span class="token punctuation">.</span><span class="token function">faild</span><span class="token punctuation">(</span><span class="token string">"您已经签到了，一天只能签到一次！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 实际中可以通过前端点击签到按钮置灰，按钮只能点击一次。</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token keyword">else</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    jedis<span class="token punctuation">.</span><span class="token function">setbit</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> day<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token keyword">return</span> R<span class="token punctuation">.</span><span class="token function">ok</span><span class="token punctuation">(</span><span class="token string">"签到成功！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <blockquote>
 <p>以上代码记录紧急，仅供参考！如有错误及不严谨地方，请谅解并留言！</p>
 </blockquote>
@@ -887,9 +955,6 @@ $(document).ready(function() {
   });
 </script>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-wanko"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7},"log":false});</script></body>
-<script src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/code_rain.js"></script>
-<!--代码雨-->
-
 <!-- 图片预加载 -->
 <script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
 </html>

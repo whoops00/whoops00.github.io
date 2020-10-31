@@ -63,6 +63,25 @@
 <meta name="generator" content="Hexo 5.1.1"></head>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css"> <!-- 这条在sakura中已有，可不添加 --><script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>
+<!--代码雨-->
+
+      <!-- 数字雨 -->
+      <canvas id="code_rain_canvas" width="1440" height="900"></canvas>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/code_rain.js">
+        <style>
+            #code_rain_canvas {
+              position: fixed;
+              right: 0px;
+              bottom: 0px;
+              min-width: 100%;
+              min-height: 100%;
+              height: auto;
+              width: auto;
+              z-index: -1;
+            }
+        </style>
+    </script>
+
 <body class="page-template page-template-user page-template-page-analytics page-template-userpage-analytics-php page page-id-1297 chinese-font serif isWebKit">
   <div class="scrollbar" id="bar">
   </div>
@@ -392,89 +411,131 @@
     <article class="post-item post-301 page type-page status-publish has-post-thumbnail hentry">
       <h1 id="Stream流相关操作"><a href="#Stream流相关操作" class="headerlink" title="Stream流相关操作"></a>Stream流相关操作</h1><h2 id="Stream流"><a href="#Stream流" class="headerlink" title="Stream流"></a>Stream流</h2><h4 id="一、Stream的中间操作"><a href="#一、Stream的中间操作" class="headerlink" title="一、Stream的中间操作"></a>一、Stream的中间操作</h4><ul>
 <li><p><strong>distinct()</strong>：去重```java<br>User.Stream().distinct()</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- **filter**：过滤&#96;&#96;&#96;java</span><br><span class="line">students.stream().filter(student -&gt; &quot;清华大学&quot;.equals(student.getSchool())).collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
-</li>
+<pre><code></code></pre></li>
+<li><p><strong>filter</strong>：过滤```java<br>students.stream().filter(student -&gt; “清华大学”.equals(student.getSchool())).collect(Collectors.toList());</p>
+<pre><code></code></pre></li>
 <li><p><strong>limit</strong>：limit操作也类似于SQL语句中的<code>LIMIT</code>关键字，不过相对功能较弱，limit返回包含前n个元素的流，当集合大小小于n时，则返回实际长度。```java<br>students.stream().filter(student -&gt; “计算机”.equals(student.getMajor())).limit(2).collect(Collectors.toList());</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- **.sorted()** ：排序&#96;&#96;&#96;java</span><br><span class="line">&#x2F;&#x2F; 状态排序</span><br><span class="line">orderListDTOS.stream().sorted(Comparator.comparing(OrderListDTO::getOrderStatusStr)</span><br><span class="line">          &#x2F;&#x2F; 评价时间 为null靠前</span><br><span class="line">          .thenComparing(OrderListDTO::getEvaluateTime, Comparator.nullsFirst(String::compareTo).reversed())</span><br><span class="line">          &#x2F;&#x2F; 下单时间 倒序</span><br><span class="line">          .thenComparing(OrderListDTO::getOrderTime, Comparator.nullsFirst(String::compareTo)).reversed())</span><br><span class="line">          &#x2F;&#x2F; 赋值给新集合 进行保存</span><br><span class="line">          .collect(Collectors.toList()).forEach(order -&gt; &#123;</span><br><span class="line">			OrderListDTO orderListDTO &#x3D; new OrderListDTO();</span><br><span class="line">			BeanUtils.copyProperties(order, orderListDTO);</span><br><span class="line">			orders.add(orderListDTO);</span><br><span class="line">		&#125;);</span><br></pre></td></tr></table></figure>
-</li>
+<pre><code></code></pre></li>
+<li><p><strong>.sorted()</strong> ：排序```java<br>// 状态排序<br>orderListDTOS.stream().sorted(Comparator.comparing(OrderListDTO::getOrderStatusStr)</p>
+<pre><code>    // 评价时间 为null靠前
+    .thenComparing(OrderListDTO::getEvaluateTime, Comparator.nullsFirst(String::compareTo).reversed())
+    // 下单时间 倒序
+    .thenComparing(OrderListDTO::getOrderTime, Comparator.nullsFirst(String::compareTo)).reversed())
+    // 赋值给新集合 进行保存
+    .collect(Collectors.toList()).forEach(order -&gt; &#123;
+      OrderListDTO orderListDTO = new OrderListDTO();
+      BeanUtils.copyProperties(order, orderListDTO);
+      orders.add(orderListDTO);
+  &#125;);</code></pre><pre><code></code></pre></li>
 <li><p><strong>skip</strong>：是跳过前n个元素```java<br>students.stream().filter(student -&gt; “计算机科学”.equals(student.getMajor())).skip(2)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- **of**：实现判断&#96;&#96;&#96;java</span><br><span class="line">String status &#x3D; pouch.getStatus();</span><br><span class="line">if (Stream.of(</span><br><span class="line">        &quot;Finalized&quot;,</span><br><span class="line">        &quot;Ready&quot;,</span><br><span class="line">        &quot;Checkout&quot;,</span><br><span class="line">        &quot;Confirmed&quot;,</span><br><span class="line">        &quot;Book&quot;,</span><br><span class="line">        &quot;Started&quot;,</span><br><span class="line">        &quot;Inital&quot;,</span><br><span class="line">        &quot;Close&quot;)</span><br><span class="line">        .anyMatch(status::equals)) &#123;&#x2F;&#x2F; anyMatch：检测是否存在一个或多个满足指定的参数行为</span><br><span class="line">    &#x2F;&#x2F; 逻辑代码块</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code></code></pre></li>
+<li><p><strong>of</strong>：实现判断```java<br>String status = pouch.getStatus();<br>if (Stream.of(</p>
+<pre><code>  &quot;Finalized&quot;,
+  &quot;Ready&quot;,
+  &quot;Checkout&quot;,
+  &quot;Confirmed&quot;,
+  &quot;Book&quot;,
+  &quot;Started&quot;,
+  &quot;Inital&quot;,
+  &quot;Close&quot;)
+  .anyMatch(status::equals)) &#123;// anyMatch：检测是否存在一个或多个满足指定的参数行为</code></pre><p>  // 逻辑代码块<br>}</p>
+<pre><code>
 
 
-
-
-</li>
+</code></pre></li>
 </ul>
 <h4 id="二、终端操作："><a href="#二、终端操作：" class="headerlink" title="二、终端操作："></a>二、终端操作：</h4><p><strong>2.1  查找：</strong></p>
 <ul>
 <li><p><strong>allMatch</strong>：allMatch用于<strong>检测是否全部都满足指定的参数行为</strong>，如果全部满足则返回true，如下：学生年龄是否大于等于18。```java<br>boolean isAdult = students.stream().allMatch(student -&gt; student.getAge() &gt;= 18);</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- **anyMatch**：anyMatch则是**检测是否存在一个或多个满足指定的参数行为**，如果满足则返回true，如下：所有学生中是否有清华大学的学生。&#96;&#96;&#96;java</span><br><span class="line">boolean hasWhu &#x3D; students.stream().anyMatch(student -&gt; &quot;清华大学&quot;.equals(student.getSchool()));</span><br></pre></td></tr></table></figure>
-</li>
+<pre><code></code></pre></li>
+<li><p><strong>anyMatch</strong>：anyMatch则是<strong>检测是否存在一个或多个满足指定的参数行为</strong>，如果满足则返回true，如下：所有学生中是否有清华大学的学生。```java<br>boolean hasWhu = students.stream().anyMatch(student -&gt; “清华大学”.equals(student.getSchool()));</p>
+<pre><code></code></pre></li>
 <li><p><strong>noneMathch</strong>：noneMatch用于<strong>检测是否不存在满足指定行为的元素</strong>，如果不存在则返回true，如下：检测是否不存在专业为计算机科学的学生。```java<br>boolean noneCs = students.stream().noneMatch(student -&gt; “计算机科学”.equals(student.getMajor()));</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- **findFirst**：**用于返回满足条件的第一个元素**&#96;&#96;&#96;java</span><br><span class="line">students.stream().filter(student -&gt; &quot;计算机科学&quot;.equals(student.getMajor())).findFirst();</span><br></pre></td></tr></table></figure>
-</li>
+<pre><code></code></pre></li>
+<li><p><strong>findFirst</strong>：<strong>用于返回满足条件的第一个元素</strong>```java<br>students.stream().filter(student -&gt; “计算机科学”.equals(student.getMajor())).findFirst();</p>
+<pre><code></code></pre></li>
 <li><p><strong>findAny</strong>：<strong>相对于findFirst的区别在于，findAny不一定返回第一个，而是返回任意一个</strong>```java<br>students.stream().filter(student -&gt; “计算机”.equals(student.getMajor())).findAny();</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&gt; 实际上对于顺序流式处理而言，findFirst和findAny返回的结果是一样的，至于为什么会这样设计，是因为在下一篇我们介绍的**并行流式处理**，当我们启用并行流式处理的时候，查找第一个元素往往会有很多限制，如果不是特别需求，在**并行流式处理中使用findAny的性能要比findFirst好**。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">**2.2  归约：**</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&gt; 我们大部分都是通过**&#96;collect(Collectors.toList())&#96;对数据封装返回**，如我的目标不是返回一个新的集合，而是希望对经过参数化操作后的集合进行进一步的运算，那么我们可用对**集合实施归约**操作。java8的流式处理提供了**&#96;reduce&#96;**方法来达到这一目的。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">前面我们通过mapToInt将&#96;Stream&lt;Student&gt;&#96;映射成为&#96;IntStream&#96;，并通过&#96;IntStream&#96;的sum方法求得所有学生的年龄之和，实际上我们通过归约操作，也可以达到这一目的，实现如下：</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">​&#96;&#96;&#96;java</span><br><span class="line">&#x2F;&#x2F; 前面例子中的方法</span><br><span class="line">int totalAge &#x3D; students.stream()</span><br><span class="line">                .filter(student -&gt; &quot;计算机科学&quot;.equals(student.getMajor()))</span><br><span class="line">                .mapToInt(Student::getAge).sum();</span><br><span class="line">&#x2F;&#x2F; 归约操作</span><br><span class="line">int totalAge &#x3D; students.stream()</span><br><span class="line">                .filter(student -&gt; &quot;计算机科学&quot;.equals(student.getMajor()))</span><br><span class="line">                .map(Student::getAge)</span><br><span class="line">                .reduce(0, (a, b) -&gt; a + b);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 进一步简化</span><br><span class="line">int totalAge2 &#x3D; students.stream()</span><br><span class="line">                .filter(student -&gt; &quot;计算机科学&quot;.equals(student.getMajor()))</span><br><span class="line">                .map(Student::getAge)</span><br><span class="line">                .reduce(0, Integer::sum);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 采用无初始值的重载版本，需要注意返回Optional</span><br><span class="line">Optional&lt;Integer&gt; totalAge &#x3D; students.stream()</span><br><span class="line">                .filter(student -&gt; &quot;计算机科学&quot;.equals(student.getMajor()))</span><br><span class="line">                .map(Student::getAge)</span><br><span class="line">                .reduce(Integer::sum);  &#x2F;&#x2F; 去掉初始值</span><br></pre></td></tr></table></figure>
+<pre><code>&gt; 实际上对于顺序流式处理而言，findFirst和findAny返回的结果是一样的，至于为什么会这样设计，是因为在下一篇我们介绍的**并行流式处理**，当我们启用并行流式处理的时候，查找第一个元素往往会有很多限制，如果不是特别需求，在**并行流式处理中使用findAny的性能要比findFirst好**。
 
 
-</li>
+
+
+</code></pre></li>
 </ul>
-<p><strong>2.3  收集：</strong></p>
-<p>前面利用<strong><code>collect(Collectors.toList())</code>是一个简单的收集操作，是对处理结果的封装</strong>，对应的还有<strong><code>toSet</code>、<code>toMap</code></strong>，以满足我们对于结果组织的需求。这些方法均来自于<code>java.util.stream.Collectors</code>，我们可以称之为收集器。</p>
-<p><strong>2.3.1  规约：</strong></p>
+<p><strong>2.2  归约：</strong></p>
 <blockquote>
-<p><strong>收集器也提供了相应的归约操作</strong>，但是与reduce在内部实现上是有区别的<strong>，收集器更加适用于可变容器上的归约操作</strong>，这些收集器广义上均基于<strong><code>Collectors.reducing()</code></strong>实现。</p>
+<p>我们大部分都是通过<strong><code>collect(Collectors.toList())</code>对数据封装返回</strong>，如我的目标不是返回一个新的集合，而是希望对经过参数化操作后的集合进行进一步的运算，那么我们可用对<strong>集合实施归约</strong>操作。java8的流式处理提供了<strong><code>reduce</code></strong>方法来达到这一目的。</p>
 </blockquote>
-<p>(1). 求学生总数：<strong>.count()、Collectors.counting()</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> count = students.stream().collect(Collectors.counting());</span><br><span class="line"><span class="comment">// 进一步简化</span></span><br><span class="line"><span class="keyword">long</span> count = students.stream().count();</span><br></pre></td></tr></table></figure>
+<p>前面我们通过mapToInt将<code>Stream&lt;Student&gt;</code>映射成为<code>IntStream</code>，并通过<code>IntStream</code>的sum方法求得所有学生的年龄之和，实际上我们通过归约操作，也可以达到这一目的，实现如下：</p>
+<p>​```java<br>// 前面例子中的方法<br>int totalAge = students.stream()<br>                .filter(student -&gt; “计算机科学”.equals(student.getMajor()))<br>                .mapToInt(Student::getAge).sum();<br>// 归约操作<br>int totalAge = students.stream()<br>                .filter(student -&gt; “计算机科学”.equals(student.getMajor()))<br>                .map(Student::getAge)<br>                .reduce(0, (a, b) -&gt; a + b);</p>
+<p>// 进一步简化<br>int totalAge2 = students.stream()<br>                .filter(student -&gt; “计算机科学”.equals(student.getMajor()))<br>                .map(Student::getAge)<br>                .reduce(0, Integer::sum);</p>
+<p>// 采用无初始值的重载版本，需要注意返回Optional<br>Optional<Integer> totalAge = students.stream()<br>                .filter(student -&gt; “计算机科学”.equals(student.getMajor()))<br>                .map(Student::getAge)<br>                .reduce(Integer::sum);  // 去掉初始值</p>
+<pre><code>
+
+**2.3  收集：**
 
 
-<p>(2). 求最大值和最小值：<strong>Collectors.maxBy、Collectors.minBy</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 求最大年龄</span></span><br><span class="line">Optional&lt;Student&gt; olderStudent = students.stream().collect(Collectors.maxBy((s1, s2) -&gt; s1.getAge() - s2.getAge()));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 进一步简化</span></span><br><span class="line">Optional&lt;Student&gt; olderStudent2 = students.stream().collect(Collectors.maxBy(Comparator.comparing(Student::getAge)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 求最小年龄</span></span><br><span class="line">Optional&lt;Student&gt; olderStudent3 = students.stream().collect(Collectors.minBy(Comparator.comparing(Student::getAge)));</span><br></pre></td></tr></table></figure>
+前面利用**`collect(Collectors.toList())`是一个简单的收集操作，是对处理结果的封装**，对应的还有**`toSet`、`toMap`**，以满足我们对于结果组织的需求。这些方法均来自于`java.util.stream.Collectors`，我们可以称之为收集器。
 
 
+**2.3.1  规约：**
+
+
+&gt; **收集器也提供了相应的归约操作**，但是与reduce在内部实现上是有区别的**，收集器更加适用于可变容器上的归约操作**，这些收集器广义上均基于**`Collectors.reducing()`**实现。
+
+
+
+(1). 求学生总数：**.count()、Collectors.counting()**
+
+
+```java
+long count = students.stream().collect(Collectors.counting());
+// 进一步简化
+long count = students.stream().count();</code></pre><p>(2). 求最大值和最小值：<strong>Collectors.maxBy、Collectors.minBy</strong></p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 求最大年龄</span>
+Optional<span class="token operator">&lt;</span>Student<span class="token operator">></span> olderStudent <span class="token operator">=</span> students<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">maxBy</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s1<span class="token punctuation">,</span> s2<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> s1<span class="token punctuation">.</span><span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> s2<span class="token punctuation">.</span><span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 进一步简化</span>
+Optional<span class="token operator">&lt;</span>Student<span class="token operator">></span> olderStudent2 <span class="token operator">=</span> students<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">maxBy</span><span class="token punctuation">(</span>Comparator<span class="token punctuation">.</span><span class="token function">comparing</span><span class="token punctuation">(</span>Student<span class="token operator">:</span><span class="token operator">:</span>getAge<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 求最小年龄</span>
+Optional<span class="token operator">&lt;</span>Student<span class="token operator">></span> olderStudent3 <span class="token operator">=</span> students<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">minBy</span><span class="token punctuation">(</span>Comparator<span class="token punctuation">.</span><span class="token function">comparing</span><span class="token punctuation">(</span>Student<span class="token operator">:</span><span class="token operator">:</span>getAge<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <p>(3). 求总和：<strong>Collectors.summingInt</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> totalAge4 = students.stream().collect(Collectors.summingInt(Student::getAge));</span><br><span class="line"><span class="comment">// 对应的还有summingLong、summingDouble。</span></span><br></pre></td></tr></table></figure>
-
-
-<pre><code>求平均值：**Collectors.averagingInt**</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> avgAge = students.stream().collect(Collectors.averagingInt(Student::getAge));</span><br><span class="line"><span class="comment">// 对应的还有averagingLong、averagingDouble。</span></span><br></pre></td></tr></table></figure>
-
-
-<pre><code>一次性得到元素个数、总和、均值、最大值、最小值:</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">IntSummaryStatistics statistics = students.stream().collect(Collectors.summarizingInt(Student::getAge));</span><br><span class="line"><span class="comment">// 输出：</span></span><br><span class="line">IntSummaryStatistics&#123;count=<span class="number">10</span>, sum=<span class="number">220</span>, min=<span class="number">20</span>, average=<span class="number">22.000000</span>, max=<span class="number">24</span>&#125;</span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-java"><code class="language-java"><span class="token keyword">int</span> totalAge4 <span class="token operator">=</span> students<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">summingInt</span><span class="token punctuation">(</span>Student<span class="token operator">:</span><span class="token operator">:</span>getAge<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// 对应的还有summingLong、summingDouble。</span></code></pre>
+<pre><code>求平均值：**Collectors.averagingInt**</code></pre><pre class=" language-java"><code class="language-java"><span class="token keyword">double</span> avgAge <span class="token operator">=</span> students<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">averagingInt</span><span class="token punctuation">(</span>Student<span class="token operator">:</span><span class="token operator">:</span>getAge<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// 对应的还有averagingLong、averagingDouble。</span></code></pre>
+<pre><code>一次性得到元素个数、总和、均值、最大值、最小值:</code></pre><pre class=" language-java"><code class="language-java">IntSummaryStatistics statistics <span class="token operator">=</span> students<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">summarizingInt</span><span class="token punctuation">(</span>Student<span class="token operator">:</span><span class="token operator">:</span>getAge<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// 输出：</span>
+IntSummaryStatistics<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>count<span class="token operator">=</span><span class="token number">10</span><span class="token punctuation">,</span> sum<span class="token operator">=</span><span class="token number">220</span><span class="token punctuation">,</span> min<span class="token operator">=</span><span class="token number">20</span><span class="token punctuation">,</span> average<span class="token operator">=</span><span class="token number">22.000000</span><span class="token punctuation">,</span> max<span class="token operator">=</span><span class="token number">24</span><span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
 <p><strong><em><em>对应的还有<code>summarizingLong</code>、<code>summarizingDouble</code>…</em></em></strong></p>
 <p>(4).  字符串拼接 :   <strong>Collectors.joining(“”)</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">String names = students.stream().map(Student::getName).collect(Collectors.joining());</span><br><span class="line"><span class="comment">// 输出：孔明伯约玄德云长翼德元直奉孝仲谋鲁肃丁奉</span></span><br><span class="line">String names = students.stream().map(Student::getName).collect(Collectors.joining(<span class="string">&quot;, &quot;</span>));</span><br><span class="line"><span class="comment">// 输出：孔明, 伯约, 玄德, 云长, 翼德, 元直, 奉孝, 仲谋, 鲁肃, 丁奉</span></span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-java"><code class="language-java">String names <span class="token operator">=</span> students<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>Student<span class="token operator">:</span><span class="token operator">:</span>getName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">joining</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// 输出：孔明伯约玄德云长翼德元直奉孝仲谋鲁肃丁奉</span>
+String names <span class="token operator">=</span> students<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>Student<span class="token operator">:</span><span class="token operator">:</span>getName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">joining</span><span class="token punctuation">(</span><span class="token string">", "</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// 输出：孔明, 伯约, 玄德, 云长, 翼德, 元直, 奉孝, 仲谋, 鲁肃, 丁奉</span></code></pre>
 <p><strong>2.3.2   分组：</strong></p>
 <p>在数据库操作中，我们可以通过<strong><code>GROUP BY</code>关键字对查询到的数据进行分组</strong>，java8的流式处理也为我们提供了这样的功能<strong><code>Collectors.groupingBy</code></strong>来操作集合：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">students.stream().collect(</span><br><span class="line">                Collectors.groupingBy(Student::getSchool,  <span class="comment">// 一级分组，按学校</span></span><br><span class="line">                Collectors.groupingBy(Student::getMajor)));  <span class="comment">// 二级分组，按专业</span></span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-java"><code class="language-java">students<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>
+                Collectors<span class="token punctuation">.</span><span class="token function">groupingBy</span><span class="token punctuation">(</span>Student<span class="token operator">:</span><span class="token operator">:</span>getSchool<span class="token punctuation">,</span>  <span class="token comment" spellcheck="true">// 一级分组，按学校</span>
+                Collectors<span class="token punctuation">.</span><span class="token function">groupingBy</span><span class="token punctuation">(</span>Student<span class="token operator">:</span><span class="token operator">:</span>getMajor<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// 二级分组，按专业</span></code></pre>
 <p>实际上在<code>groupingBy</code>的第二个参数不是只能传递groupingBy，还可以传递任意<code>Collector</code>类型，比如我们可以传递一个<code>Collector.counting</code>，用以统计每个组的个数：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, Long&gt; groups = students.stream().collect(Collectors.groupingBy(Student::getSchool, Collectors.counting()));</span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-java"><code class="language-java">Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Long<span class="token operator">></span> groups <span class="token operator">=</span> students<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">groupingBy</span><span class="token punctuation">(</span>Student<span class="token operator">:</span><span class="token operator">:</span>getSchool<span class="token punctuation">,</span> Collectors<span class="token punctuation">.</span><span class="token function">counting</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <p><em>如果我们不添加第二个参数，则编译器会默认帮我们添加一个<code>Collectors.toList()</code>。</em></p>
 <p><strong>2.3.3    分区：</strong></p>
 <p>分区可以看做是分组的一种特殊情况，在分区中key只有两种情况：true或false，目的是<strong>将待分区集合按照条件一分为二</strong>，处理利用<strong>c<code>ollectors.partitioningBy()</code></strong>方法实现分区，该方法接收一个谓词，例如我们希望将学生分为武大学生和非武大学生，那么可以实现如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;Boolean, List&lt;Student&gt;&gt; partition = students.stream().collect(Collectors.partitioningBy(student -&gt; <span class="string">&quot;武汉大学&quot;</span>.equals(student.getSchool())));</span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-java"><code class="language-java">Map<span class="token operator">&lt;</span>Boolean<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>Student<span class="token operator">>></span> partition <span class="token operator">=</span> students<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">partitioningBy</span><span class="token punctuation">(</span>student <span class="token operator">-</span><span class="token operator">></span> <span class="token string">"武汉大学"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>student<span class="token punctuation">.</span><span class="token function">getSchool</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <p><strong>例如：比如将数组分为奇数和偶数。</strong></p>
-<h4 id="三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）"><a href="#三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）" class="headerlink" title="三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）"></a>三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list.parallelStream().map(e -&gt; e + 3).collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
-
-
-<blockquote>
+<h4 id="三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）"><a href="#三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）" class="headerlink" title="三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）"></a>三、parallelStream（并行流，相比于Stream更快但是涉及到线程安全）</h4><pre><code>list.parallelStream().map(e -&gt; e + 3).collect(Collectors.toList());</code></pre><blockquote>
 <p><strong>parallelStream</strong>在处理大的数据量的集合时使用，但是线程不安全，可以先<strong>map</strong>，再<strong>.collect(Collectors.toList()</strong>，<strong>.collect(Collectors.toList()</strong>可以封装一个List集合返回，还可以保证线程安全。</p>
 </blockquote>
 <p><strong>——-错误记录：——-</strong></p>
 <p>1、<strong>Collectors.toMap    value为null报错</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, Integer&gt; map3 = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">0</span>);</span><br><span class="line">map3 = list3.stream().collect(Collectors.toMap(</span><br><span class="line">							list3 -&gt; Optional.ofNullable(list3).map(SpGoodsIdAndCount::getGoodsId).orElse(<span class="string">&quot;&quot;</span>)</span><br><span class="line">							, list3 -&gt; Optional.ofNullable(list3).map(SpGoodsIdAndCount::getCount).orElse(<span class="number">0</span>)</span><br><span class="line">							, (key1, key2) -&gt; key2));</span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-java"><code class="language-java">Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Integer<span class="token operator">></span> map3 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+map3 <span class="token operator">=</span> list3<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">toMap</span><span class="token punctuation">(</span>
+                            list3 <span class="token operator">-</span><span class="token operator">></span> Optional<span class="token punctuation">.</span><span class="token function">ofNullable</span><span class="token punctuation">(</span>list3<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>SpGoodsIdAndCount<span class="token operator">:</span><span class="token operator">:</span>getGoodsId<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">orElse</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span>
+                            <span class="token punctuation">,</span> list3 <span class="token operator">-</span><span class="token operator">></span> Optional<span class="token punctuation">.</span><span class="token function">ofNullable</span><span class="token punctuation">(</span>list3<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>SpGoodsIdAndCount<span class="token operator">:</span><span class="token operator">:</span>getCount<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">orElse</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+                            <span class="token punctuation">,</span> <span class="token punctuation">(</span>key1<span class="token punctuation">,</span> key2<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> key2<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <blockquote>
 <p>解析：<br>Collectors.toMap(）：list集合转换为map，通过Optional判断当key和value为null时赋予默认值。<br>(key1, key2) -&gt; key2)：当key重复时，选择key2作为新的key值。</p>
 </blockquote>
@@ -955,9 +1016,6 @@ $(document).ready(function() {
   });
 </script>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-wanko"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7},"log":false});</script></body>
-<script src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/code_rain.js"></script>
-<!--代码雨-->
-
 <!-- 图片预加载 -->
 <script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
 </html>

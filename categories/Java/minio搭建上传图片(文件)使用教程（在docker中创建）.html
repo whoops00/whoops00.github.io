@@ -63,6 +63,25 @@
 <meta name="generator" content="Hexo 5.1.1"></head>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css"> <!-- 这条在sakura中已有，可不添加 --><script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>
+<!--代码雨-->
+
+      <!-- 数字雨 -->
+      <canvas id="code_rain_canvas" width="1440" height="900"></canvas>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/code_rain.js">
+        <style>
+            #code_rain_canvas {
+              position: fixed;
+              right: 0px;
+              bottom: 0px;
+              min-width: 100%;
+              min-height: 100%;
+              height: auto;
+              width: auto;
+              z-index: -1;
+            }
+        </style>
+    </script>
+
 <body class="page-template page-template-user page-template-page-analytics page-template-userpage-analytics-php page page-id-1297 chinese-font serif isWebKit">
   <div class="scrollbar" id="bar">
   </div>
@@ -393,39 +412,41 @@
       <h1 id="minio搭建上传图片-文件-使用教程（在docker中创建）："><a href="#minio搭建上传图片-文件-使用教程（在docker中创建）：" class="headerlink" title="minio搭建上传图片(文件)使用教程（在docker中创建）："></a>minio搭建上传图片(文件)使用教程（在docker中创建）：</h1><blockquote>
 <p>使用服务器CentOS 7.0，版本：3.10.0-1127.10.1.el7.x86_64</p>
 </blockquote>
-<h4 id="一、查看服务器版本（使用minio版本好像需要在3-0-xx以上，其他版本请自行测试）："><a href="#一、查看服务器版本（使用minio版本好像需要在3-0-xx以上，其他版本请自行测试）：" class="headerlink" title="一、查看服务器版本（使用minio版本好像需要在3.0.xx以上，其他版本请自行测试）："></a>一、查看服务器版本（使用minio版本好像需要在3.0.xx以上，其他版本请自行测试）：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -r</span><br></pre></td></tr></table></figure>
-
-
+<h4 id="一、查看服务器版本（使用minio版本好像需要在3-0-xx以上，其他版本请自行测试）："><a href="#一、查看服务器版本（使用minio版本好像需要在3-0-xx以上，其他版本请自行测试）：" class="headerlink" title="一、查看服务器版本（使用minio版本好像需要在3.0.xx以上，其他版本请自行测试）："></a>一、查看服务器版本（使用minio版本好像需要在3.0.xx以上，其他版本请自行测试）：</h4><pre class=" language-shell"><code class="language-shell">uname -r</code></pre>
 <h4 id="二、安装docker容器。（其他安装方法请百度）"><a href="#二、安装docker容器。（其他安装方法请百度）" class="headerlink" title="二、安装docker容器。（其他安装方法请百度）"></a>二、安装docker容器。（其他安装方法请百度）</h4><p><strong>2.1：安装yum源</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y epel-release</span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-shell"><code class="language-shell">yum install -y epel-release</code></pre>
 <p><strong>2.2：通过yum安装docker容器</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install docker-io</span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-shell"><code class="language-shell">yum install docker-io</code></pre>
 <p><strong>2.3：查看docker版本, 确定是否安装成功</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker version</span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-shell"><code class="language-shell">docker version</code></pre>
 <h4 id="三、创建文件在服务器上的存储路径：-可以自行命名创建"><a href="#三、创建文件在服务器上的存储路径：-可以自行命名创建" class="headerlink" title="三、创建文件在服务器上的存储路径：(可以自行命名创建)"></a>三、创建文件在服务器上的存储路径：(可以自行命名创建)</h4><blockquote>
 <p>chmod 777 /home/data/minio/data   (设置文件夹最高权限：777读写执行)</p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /home/data/minio/data</span><br><span class="line">mkdir -p /home/data/minio/config</span><br><span class="line">chmod 777 /home/data/minio/data</span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-shell"><code class="language-shell">mkdir -p /home/data/minio/data
+mkdir -p /home/data/minio/config
+chmod 777 /home/data/minio/data</code></pre>
 <h4 id="四、在docker中创建minio"><a href="#四、在docker中创建minio" class="headerlink" title="四、在docker中创建minio"></a>四、在docker中创建minio</h4><blockquote>
 <p>MINIO_ACCESS_KEY，MINIO_SECRET_KEY：请自行设置（便于记忆）</p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 9000:9000 -e MINIO_ACCESS_KEY=MINIO_TEST_ADMIN -e MINIO_SECRET_KEY=123456 -v /data:/data minio/minio server /data</span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-shell"><code class="language-shell">docker run -p 9000:9000 -e MINIO_ACCESS_KEY=MINIO_TEST_ADMIN -e MINIO_SECRET_KEY=123456 -v /data:/data minio/minio server /data</code></pre>
 <p>_出现如下信息则证明成功，_可通过：http://服务器ip:9000进行访问。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">You are running an older version of MinIO released 1 day ago</span><br><span class="line"> Update: docker pull minio/minio:RELEASE.2020-08-27T05-16-20Z</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Endpoint:  http://***.**.**.**:9000  http://127.0.0.1:9000</span><br><span class="line"></span><br><span class="line">Browser Access:</span><br><span class="line">   http://***.**.**.**:9000  http://127.0.0.1:9000</span><br><span class="line"></span><br><span class="line">Object API (Amazon S3 compatible):</span><br><span class="line">   Go:         https://docs.min.io/docs/golang-client-quickstart-guide</span><br><span class="line">   Java:       https://docs.min.io/docs/java-client-quickstart-guide</span><br><span class="line">   Python:     https://docs.min.io/docs/python-client-quickstart-guide</span><br><span class="line">   JavaScript: https://docs.min.io/docs/javascript-client-quickstart-guide</span><br><span class="line">   .NET:       https://docs.min.io/docs/dotnet-client-quickstart-guide</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">You are running an older version of MinIO released 1 day ago
+ Update: docker pull minio/minio:RELEASE.2020-08-27T05-16-20Z
 
 
+Endpoint:  http://***.**.**.**:9000  http://127.0.0.1:9000
+
+Browser Access:
+   http://***.**.**.**:9000  http://127.0.0.1:9000
+
+Object API (Amazon S3 compatible):
+   Go:         https://docs.min.io/docs/golang-client-quickstart-guide
+   Java:       https://docs.min.io/docs/java-client-quickstart-guide
+   Python:     https://docs.min.io/docs/python-client-quickstart-guide
+   JavaScript: https://docs.min.io/docs/javascript-client-quickstart-guide
+   .NET:       https://docs.min.io/docs/dotnet-client-quickstart-guide</code></pre>
 <p><em>查看启动结果：</em></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">docker ps -a</code></pre>
 
       <!-- .entry-content -->
       
@@ -903,9 +924,6 @@ $(document).ready(function() {
   });
 </script>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-wanko"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7},"log":false});</script></body>
-<script src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/code_rain.js"></script>
-<!--代码雨-->
-
 <!-- 图片预加载 -->
 <script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
 </html>

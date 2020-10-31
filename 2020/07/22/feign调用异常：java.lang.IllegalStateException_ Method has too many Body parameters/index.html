@@ -63,6 +63,25 @@
 <meta name="generator" content="Hexo 5.1.1"></head>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css"> <!-- 这条在sakura中已有，可不添加 --><script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>
+<!--代码雨-->
+
+      <!-- 数字雨 -->
+      <canvas id="code_rain_canvas" width="1440" height="900"></canvas>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/code_rain.js">
+        <style>
+            #code_rain_canvas {
+              position: fixed;
+              right: 0px;
+              bottom: 0px;
+              min-width: 100%;
+              min-height: 100%;
+              height: auto;
+              width: auto;
+              z-index: -1;
+            }
+        </style>
+    </script>
+
 <body class="page-template page-template-user page-template-page-analytics page-template-userpage-analytics-php page page-id-1297 chinese-font serif isWebKit">
   <div class="scrollbar" id="bar">
   </div>
@@ -414,14 +433,20 @@
         <div class="entry-content">
           <h1 id="java-lang-IllegalStateException-Method-has-too-many-Body-parameters"><a href="#java-lang-IllegalStateException-Method-has-too-many-Body-parameters" class="headerlink" title="java.lang.IllegalStateException: Method has too many Body parameters"></a>java.lang.IllegalStateException: Method has too many Body parameters</h1><p><strong>feign调用异常：Method has too many Body parameters</strong></p>
 <p>解决方法：<strong>所有参数必须加上注解</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value = &quot;/spCommodity/commodityPage&quot;, method = RequestMethod.POST)</span></span><br><span class="line"><span class="function">R <span class="title">goodsList</span><span class="params">(Page page, <span class="meta">@RequestBody</span> CommodityListQO commodityListQO)</span></span>;<span class="comment">// 会报错</span></span><br></pre></td></tr></table></figure>
-
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"/spCommodity/commodityPage"</span><span class="token punctuation">,</span> method <span class="token operator">=</span> RequestMethod<span class="token punctuation">.</span>POST<span class="token punctuation">)</span>
+R <span class="token function">goodsList</span><span class="token punctuation">(</span>Page page<span class="token punctuation">,</span> <span class="token annotation punctuation">@RequestBody</span> CommodityListQO commodityListQO<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 会报错</span></code></pre>
 <p>get请求：参数要加上注解<a href="/RequestParam">@RequestParam </a></p>
 <p>post请求：只能有一个@RequestBody，Page属于一个对象，可删除，其余的参数需要加上<a href="/RequestParam">@RequestParam </a></p>
 <blockquote>
 <p>feign调用的接口处可修改：</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostMapping(&quot;/commodityPage&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> R <span class="title">goodsList</span><span class="params">(<span class="meta">@RequestBody</span> CommodityListQO commodityListQO)</span></span>&#123;</span><br><span class="line">        Page&lt;SpServiceCommodity&gt; page = <span class="keyword">new</span> Page&lt;&gt;();</span><br><span class="line">        <span class="comment">// 页数</span></span><br><span class="line">        page.setCurrent(commodityListQO.getCurrent());</span><br><span class="line">        <span class="comment">// 每页显示条数</span></span><br><span class="line">        page.setSize(commodityListQO.getSize());</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@PostMapping</span><span class="token punctuation">(</span><span class="token string">"/commodityPage"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> R <span class="token function">goodsList</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestBody</span> CommodityListQO commodityListQO<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        Page<span class="token operator">&lt;</span>SpServiceCommodity<span class="token operator">></span> page <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Page</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 页数</span>
+        page<span class="token punctuation">.</span><span class="token function">setCurrent</span><span class="token punctuation">(</span>commodityListQO<span class="token punctuation">.</span><span class="token function">getCurrent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 每页显示条数</span>
+        page<span class="token punctuation">.</span><span class="token function">setSize</span><span class="token punctuation">(</span>commodityListQO<span class="token punctuation">.</span><span class="token function">getSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 
         </div>
         <!-- .entry-content -->
@@ -471,15 +496,15 @@
           
             <div class="post-nepre half next">
           
-            <a href="/2020/07/20/java%E4%B8%8A%E4%BC%A0%E5%9B%BE%E7%89%87(%E6%96%87%E4%BB%B6)%E5%88%B0minio_oss_local%E6%9C%AC%E5%9C%B0/" rel="next">
+            <a href="/2020/07/20/minio%E6%90%AD%E5%BB%BA%E4%B8%8A%E4%BC%A0%E5%9B%BE%E7%89%87(%E6%96%87%E4%BB%B6)%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%EF%BC%88%E5%9C%A8docker%E4%B8%AD%E5%88%9B%E5%BB%BA%EF%BC%89/" rel="next">
               <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/uploadFile.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/uploadFile.jpg">
+                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/minio.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/minio.jpg">
               </div>
               <span class="label">
               Next Post</span>
               <div class="info">
                 <h3>
-                java上传图片(文件)到minio/oss/local本地</h3>
+                minio搭建上传图片(文件)使用教程（在docker中创建）</h3>
                 <hr>
               </div>
             </a>
@@ -943,9 +968,6 @@ $(document).ready(function() {
   });
 </script>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-wanko"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7},"log":false});</script></body>
-<script src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/code_rain.js"></script>
-<!--代码雨-->
-
 <!-- 图片预加载 -->
 <script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
 </html>

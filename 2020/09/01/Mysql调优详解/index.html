@@ -63,6 +63,25 @@
 <meta name="generator" content="Hexo 5.1.1"></head>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css"> <!-- 这条在sakura中已有，可不添加 --><script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>
+<!--代码雨-->
+
+      <!-- 数字雨 -->
+      <canvas id="code_rain_canvas" width="1440" height="900"></canvas>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/code_rain.js">
+        <style>
+            #code_rain_canvas {
+              position: fixed;
+              right: 0px;
+              bottom: 0px;
+              min-width: 100%;
+              min-height: 100%;
+              height: auto;
+              width: auto;
+              z-index: -1;
+            }
+        </style>
+    </script>
+
 <body class="page-template page-template-user page-template-page-analytics page-template-userpage-analytics-php page page-id-1297 chinese-font serif isWebKit">
   <div class="scrollbar" id="bar">
   </div>
@@ -416,14 +435,12 @@
 <li><h1 id="查询返回多条数据多列合并"><a href="#查询返回多条数据多列合并" class="headerlink" title="查询返回多条数据多列合并"></a>查询返回多条数据多列合并</h1></li>
 </ul>
 <p>一、GROUP_CONCAT([DISTINCT]要连接的字段  [Order BY 排序字段 ASC/DESC] [Separator ‘分隔符’])—–à默认使用逗号分隔，支持多个列拼接在一行展示。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">语法：</span><br><span class="line">GROUP_CONCAT(str1,str2,..., Order BY ASC&#x2F;DESC, SEPARATOR &#39;,&#39;)</span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-mysql"><code class="language-mysql">语法：
+GROUP_CONCAT(str1,str2,..., Order BY ASC/DESC, SEPARATOR ',')</code></pre>
 <p>二、<strong>CONCAT_WS（separator,str1,str2,……）</strong></p>
 <p>将多个列使用指定字符串进行拼接成一个字符串返回。与CONCAT（str1,str2,str3,……）的区别，当<strong>CONCAT</strong>函数中返回的任意一个字段的值<strong>为NULL时</strong>，则整个返回<strong>结果就为NULL</strong>，而当<strong>CONCAT_WS</strong>函数中任意一个字段的值<strong>为NULL时</strong>，则会<strong>自动忽略此列的值进行拼接</strong>；当CONCAT函数中返回的任意一个字段的<strong>值为’   ’时</strong>，则返回结果会<strong>将空白项拼接在字符串中</strong>返回。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">语法：</span><br><span class="line">CONCAT_WS(separator,str1,str2,……)</span><br></pre></td></tr></table></figure>
-
-
+<pre class=" language-mysql"><code class="language-mysql">语法：
+CONCAT_WS(separator,str1,str2,……)</code></pre>
 <h2 id="SQL语句优化策略："><a href="#SQL语句优化策略：" class="headerlink" title="SQL语句优化策略："></a>SQL语句优化策略：</h2><ul>
 <li><strong>.避免全表扫描</strong><br>对查询进行优化，应尽量<strong>避免全表扫描</strong>，首先应考虑在<strong>where 及order by</strong> 涉及的列上<strong>建立索引</strong>。</li>
 <li><strong>当有一批处理的插入或更新时，用批量插入或批量更新（Mybatis-plus也支持批量插入/更新），绝不会一条条记录的去更新!</strong></li>
@@ -999,9 +1016,6 @@ $(document).ready(function() {
   });
 </script>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-wanko"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7},"log":false});</script></body>
-<script src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/code_rain.js"></script>
-<!--代码雨-->
-
 <!-- 图片预加载 -->
 <script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
 </html>
