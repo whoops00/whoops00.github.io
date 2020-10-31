@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">java中使用@Value获取值为null问题解决 | 天网空间</title>
+  <title itemprop="name">技术栈 | 天网空间</title>
   
     <link rel="shortcut icon" href="/images/xin.ico">
   
@@ -380,51 +380,19 @@
   
     <div class="pattern-center ">
       <div class="pattern-attachment-img">
-        <img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/java/value.jpg" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+        <img src="https://cdn.jsdelivr.net/gh/whoops00/blogImg/blogv1.0/loader/orange.progress-bar-stripe-loader.svg" data-src="https://cdn.jsdelivr.net/gh/honjun/cdn@1.6/img/banner/coding.jpg" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
       </div>
       <header class="pattern-header ">
         <h1 class="entry-title">
-        Value获取值为null</h1>
+        技术栈</h1>
       </header>
     </div>
   
   <div id="content" class="site-content">
     <article class="post-item post-301 page type-page status-publish has-post-thumbnail hentry">
-      <h1 id="java中使用-Value获取值为null问题解决："><a href="#java中使用-Value获取值为null问题解决：" class="headerlink" title="java中使用@Value获取值为null问题解决："></a>java中使用@Value获取值为null问题解决：</h1><p><strong>问题重现：</strong>读取配置文件(**.yml)中的值，获取为null</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 读取配置文件(**.yml)中的值</span></span><br><span class="line"><span class="meta">@Value(value = &quot;$&#123;upload.minio.minio_url&#125;&quot;)</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> String minioUrl;</span><br></pre></td></tr></table></figure>
-
-<p><strong>问题解析：</strong></p>
-<blockquote>
-<p>java中static/final修饰的变量，通过@Value是获取不到值的。</p>
-</blockquote>
-<p><strong>问题解决方案：</strong></p>
-<p><strong>方案一：</strong>在变量的*<em>seter方法上使用<a href="/Value">@Value </a> *</em></p>
-<p>1.静态变量的setter 方法需要<strong>去掉 static  修饰词</strong>，</p>
-<p>2.并需要使用<strong>public修饰</strong>，</p>
-<p>3.最后需要注意要*<em>在类上加上<a href="/Component">@Component </a> *</em>，才可以成功注入。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value(value = &quot;$&#123;upload.minio.minio_url&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setMinioUrl</span><span class="params">(String minioUrl)</span> </span>&#123;</span><br><span class="line">	MinioUtil.minioUrl = minioUrl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>方案二：</strong>通过中间变量赋值：*<em>在类上加上<a href="/Component">@Component </a> *</em></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> String minioUrl;</span><br><span class="line"><span class="meta">@Value(value = &quot;$&#123;upload.minio.minio_url&#125;&quot;)</span></span><br><span class="line"><span class="keyword">private</span> String minioUrl2;</span><br><span class="line"></span><br><span class="line"><span class="meta">@PostConstruct</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">minioUrl = minioUrl2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>总结：</strong> <strong>解决方案有两种，都是间接的通过非static的变量获取到值，从而拿到.yml中的值；但是，两种方法中都需要在类上加上@Component。</strong></p>
-
+      
       <!-- .entry-content -->
       
-<div id="vcomments"></div>
-<script>
-  window.onload = function(){
-      var valine = new Valine();
-      valine.init({
-        el: '#vcomments',
-        appId: "QmAWIjAcAhD7BRjzX36jwIgh-gzGzoHsz",
-        appKey: "zb079LewvVCeJVyVH2t4MVDq",
-        path: window.location.pathname,
-        placeholder: "你是我一生只会遇见一次的惊喜 ..."
-      })
-  }
-</script>
-
       <div class="single-reward">
         <div class="reward-open">赏
           <div class="reward-main">
